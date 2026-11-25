@@ -15,9 +15,14 @@ BEGIN
         RETURN jsonb_build_object('error', 401, 'message', 'Невалидный токен');
     END IF;
 
-    DELETE FROM Players
-    WHERE game_id = p_game_id
-      AND login = u;
+    IF NOT EXISTS (
+        SELECT 1 FROM Players
+        WHERE game_id = p_game_id AND login = u
+    ) THEN
+        RETURN jsonb_build_object('error', 404, 'message', 'Игрок не найден в игре');
+    END IF;
+
+    -- Игрок сохраняется для целостности истории Moves и Tricks.
 
     RETURN jsonb_build_object('message', 'Вы вышли из игры');
 END

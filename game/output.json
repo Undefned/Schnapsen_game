@@ -1,11 +1,11 @@
 {
   "meta": {
-    "completed_at_utc": "2026-11-25T21:01:47.772932+00:00",
-    "steps": 14,
+    "completed_at_utc": "2026-11-25T21:22:06.066523+00:00",
+    "steps": 44,
     "source_sha256": {
       "schema.sql": "2f2c56e963aca38b2a30e081848a316a18a0aae5d0571cccd1d1570b877f5361",
       "functions.sql": "e7a6c3d79faddb5affb31c8583d7a218e1b611f7cf4867313dd8fe09e186eb56",
-      "scenario.sql": "3bdd93dbbe88bebb2f021c71dfcd19a6419fd3ba4c835795cf8f4da53809cbde",
+      "scenario.sql": "cbe2f45e4722dd663024a2d2f6c43ba64c4b60907dd29716b314eca16e21becd",
       "sql/actions/declare_schnapsen.sql": "d43ccc118f7a2480ec48a4b1d771467574d3710592476bf57ce838614939bb39"
     }
   },
@@ -15,7 +15,7 @@
       "result": null
     },
     {
-      "query": "TRUNCATE Schnapsen_declarations, Cards_in_trick, Tricks, Cards_in_hand,\n         Moves, Cards, Rounds, Players, Games, T",
+      "query": "TRUNCATE Schnapsen_declarations, Round_winner, Cards_in_trick, Tricks,\n         Cards_in_hand, Moves, Cards, Rounds, Pla",
       "result": null
     },
     {
@@ -23,14 +23,22 @@
       "result": null
     },
     {
+      "query": "CREATE TEMP TABLE test_game (id INT PRIMARY KEY)",
+      "result": null
+    },
+    {
+      "query": "CREATE TEMP TABLE test_cards (\n    player TEXT PRIMARY KEY,\n    card_id INT NOT NULL\n)",
+      "result": null
+    },
+    {
       "query": "SELECT schnapsen.register_user('anna', 'pass123') AS anna_registration",
       "result": [
         [
           {
-            "access_token": "0619690cbb8cbc292da3ae2f3dbb4edf14ca6eb29c61b87d5cec821fb0b587f9",
-            "refresh_token": "0092b093f3941f1bf1a38ca4728c761985c47ba4d39aacbbd7c78af5e5ab42ff",
-            "access_expires": "2026-11-25T22:01:47.74986",
-            "refresh_expires": "2026-12-02T21:01:47.749909"
+            "access_token": "490135451f20b3d9e18476cbcab415d4e6e9421ad3aba8589edc7416c710acfc",
+            "refresh_token": "5c54d037e82f9a7a9017e9197e65d6d9334de4d819e342b292fd6b33f817be92",
+            "access_expires": "2026-11-25T22:22:05.884245",
+            "refresh_expires": "2026-12-02T21:22:05.884274"
           }
         ]
       ]
@@ -40,10 +48,10 @@
       "result": [
         [
           {
-            "access_token": "6b81291f51a2b73febfe66a52f9e24ab54bf526840433281cbdd3d1cc7f30abc",
-            "refresh_token": "212585882bc47fc84d222f18387547eeb8af66dcade6e093d6c964334743a1c5",
-            "access_expires": "2026-11-25T22:01:47.752065",
-            "refresh_expires": "2026-12-02T21:01:47.752068"
+            "access_token": "64dff4c7db1a4cd077ea47e1bf2a59e043408c259a91dfb35e7b101c6f321ef7",
+            "refresh_token": "dc318dac0e1bc3938b639801de6e604175f14b3fda1a29d6028f471b23c5f1d8",
+            "access_expires": "2026-11-25T22:22:05.887282",
+            "refresh_expires": "2026-12-02T21:22:05.887286"
           }
         ]
       ]
@@ -64,15 +72,15 @@
       ]
     },
     {
-      "query": "INSERT INTO test_tokens (player, token)\nSELECT 'anna', (schnapsen.login_user('anna', 'pass123')->>'access_token')",
+      "query": "INSERT INTO test_tokens(player, token)\nSELECT 'anna', (schnapsen.login_user('anna', 'pass123')->>'access_token')",
       "result": null
     },
     {
-      "query": "INSERT INTO test_tokens (player, token)\nSELECT 'boris', (schnapsen.login_user('boris', 'pass456')->>'access_token')",
+      "query": "INSERT INTO test_tokens(player, token)\nSELECT 'boris', (schnapsen.login_user('boris', 'pass456')->>'access_token')",
       "result": null
     },
     {
-      "query": "SELECT login, access_expires > clock_timestamp() AS access_token_valid,\n       refresh_expires > clock_timestamp() AS re",
+      "query": "SELECT login,\n       access_expires > clock_timestamp() AS access_token_valid,\n       refresh_expires > clock_timestamp(",
       "result": [
         [
           "anna",
@@ -97,20 +105,20 @@
       ]
     },
     {
-      "query": "SELECT schnapsen.login_user('anna', 'pass123') AS anna_second_login",
+      "query": "SELECT schnapsen.login_user('anna', 'pass123') AS anna_second_device",
       "result": [
         [
           {
-            "access_token": "1670928fe5ad09b6cc224b9a6ae3bce616cdd0aefaaa039bb3d851d0f432104f",
-            "refresh_token": "ef0d1e7efd75fc35850fce596ca54f3ea4ab1efedb1d318859a330c57f647f72",
-            "access_expires": "2026-11-25T22:01:47.762652",
-            "refresh_expires": "2026-12-02T21:01:47.762657"
+            "access_token": "71aa0a1a63448dead59f4d8847b8f4c50cc1cb705d7e896fbddce1090ad62c7e",
+            "refresh_token": "51ce6d3d88d9aa3682409f0ae28d31212fdc5ae995853c7221638fc84ff8eb1d",
+            "access_expires": "2026-11-25T22:22:05.900323",
+            "refresh_expires": "2026-12-02T21:22:05.900329"
           }
         ]
       ]
     },
     {
-      "query": "SELECT login, count(*) AS active_tokens\nFROM schnapsen.Tokens\nGROUP BY login\nORDER BY login",
+      "query": "SELECT login, count(*) AS token_count\nFROM schnapsen.Tokens\nGROUP BY login\nORDER BY login",
       "result": [
         [
           "anna",
@@ -119,6 +127,637 @@
         [
           "boris",
           2
+        ]
+      ]
+    },
+    {
+      "query": "INSERT INTO test_game(id)\nSELECT (schnapsen.create_game(\n    (SELECT token FROM test_tokens WHERE player = 'anna'),\n    ",
+      "result": null
+    },
+    {
+      "query": "SELECT g.id, g.move_time_limit, g.points_to_win\nFROM schnapsen.Games g\nWHERE g.id = (SELECT id FROM test_game)",
+      "result": [
+        [
+          1,
+          60,
+          7
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.join_game(\n    (SELECT token FROM test_tokens WHERE player = 'boris'),\n    (SELECT id FROM test_game)\n)",
+      "result": [
+        [
+          {
+            "round_id": 1,
+            "trump_suit": "hearts",
+            "round_number": 1,
+            "first_player_id": 1
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT p.id AS player_id, p.login, p.seat_number, p.round_score\nFROM schnapsen.Players p\nWHERE p.game_id = (SELECT id FR",
+      "result": [
+        [
+          1,
+          "anna",
+          1,
+          0
+        ],
+        [
+          2,
+          "boris",
+          2,
+          0
+        ]
+      ]
+    },
+    {
+      "query": "SELECT r.id AS round_id, r.round_number, r.trump_suit, r.game_id\nFROM schnapsen.Rounds r\nWHERE r.game_id = (SELECT id FR",
+      "result": [
+        [
+          1,
+          1,
+          "hearts",
+          1
+        ]
+      ]
+    },
+    {
+      "query": "SELECT c.id, c.suit, c.rank, r.points\nFROM schnapsen.Cards c\nJOIN schnapsen.Ranks r ON r.rank = c.rank\nWHERE c.game_id =",
+      "result": [
+        [
+          1,
+          "spades",
+          "9",
+          0
+        ],
+        [
+          2,
+          "spades",
+          "J",
+          2
+        ],
+        [
+          3,
+          "spades",
+          "Q",
+          3
+        ],
+        [
+          4,
+          "spades",
+          "K",
+          4
+        ],
+        [
+          5,
+          "spades",
+          "10",
+          10
+        ],
+        [
+          6,
+          "spades",
+          "A",
+          11
+        ],
+        [
+          7,
+          "hearts",
+          "9",
+          0
+        ],
+        [
+          8,
+          "hearts",
+          "J",
+          2
+        ],
+        [
+          9,
+          "hearts",
+          "Q",
+          3
+        ],
+        [
+          10,
+          "hearts",
+          "K",
+          4
+        ],
+        [
+          11,
+          "hearts",
+          "10",
+          10
+        ],
+        [
+          12,
+          "hearts",
+          "A",
+          11
+        ],
+        [
+          13,
+          "diamonds",
+          "9",
+          0
+        ],
+        [
+          14,
+          "diamonds",
+          "J",
+          2
+        ],
+        [
+          15,
+          "diamonds",
+          "Q",
+          3
+        ],
+        [
+          16,
+          "diamonds",
+          "K",
+          4
+        ],
+        [
+          17,
+          "diamonds",
+          "10",
+          10
+        ],
+        [
+          18,
+          "diamonds",
+          "A",
+          11
+        ],
+        [
+          19,
+          "clubs",
+          "9",
+          0
+        ],
+        [
+          20,
+          "clubs",
+          "J",
+          2
+        ],
+        [
+          21,
+          "clubs",
+          "Q",
+          3
+        ],
+        [
+          22,
+          "clubs",
+          "K",
+          4
+        ],
+        [
+          23,
+          "clubs",
+          "10",
+          10
+        ],
+        [
+          24,
+          "clubs",
+          "A",
+          11
+        ]
+      ]
+    },
+    {
+      "query": "SELECT p.login, c.id AS card_id, c.suit, c.rank, r.points\nFROM schnapsen.Cards_in_hand h\nJOIN schnapsen.Players p ON p.i",
+      "result": [
+        [
+          "anna",
+          1,
+          "spades",
+          "9",
+          0
+        ],
+        [
+          "anna",
+          2,
+          "spades",
+          "J",
+          2
+        ],
+        [
+          "anna",
+          3,
+          "spades",
+          "Q",
+          3
+        ],
+        [
+          "anna",
+          4,
+          "spades",
+          "K",
+          4
+        ],
+        [
+          "anna",
+          5,
+          "spades",
+          "10",
+          10
+        ],
+        [
+          "anna",
+          6,
+          "spades",
+          "A",
+          11
+        ],
+        [
+          "boris",
+          7,
+          "hearts",
+          "9",
+          0
+        ],
+        [
+          "boris",
+          8,
+          "hearts",
+          "J",
+          2
+        ],
+        [
+          "boris",
+          9,
+          "hearts",
+          "Q",
+          3
+        ],
+        [
+          "boris",
+          10,
+          "hearts",
+          "K",
+          4
+        ],
+        [
+          "boris",
+          11,
+          "hearts",
+          "10",
+          10
+        ],
+        [
+          "boris",
+          12,
+          "hearts",
+          "A",
+          11
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.get_game_state(\n    (SELECT token FROM test_tokens WHERE player = 'anna'),\n    (SELECT id FROM test_gam",
+      "result": [
+        [
+          {
+            "game_id": 1,
+            "my_cards": [
+              {
+                "rank": "9",
+                "suit": "spades",
+                "points": 0,
+                "card_id": 1
+              },
+              {
+                "rank": "J",
+                "suit": "spades",
+                "points": 2,
+                "card_id": 2
+              },
+              {
+                "rank": "Q",
+                "suit": "spades",
+                "points": 3,
+                "card_id": 3
+              },
+              {
+                "rank": "K",
+                "suit": "spades",
+                "points": 4,
+                "card_id": 4
+              },
+              {
+                "rank": "10",
+                "suit": "spades",
+                "points": 10,
+                "card_id": 5
+              },
+              {
+                "rank": "A",
+                "suit": "spades",
+                "points": 11,
+                "card_id": 6
+              }
+            ],
+            "my_score": 0,
+            "round_id": 1,
+            "trump_suit": "hearts",
+            "round_number": 1
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.get_game_state(\n    (SELECT token FROM test_tokens WHERE player = 'boris'),\n    (SELECT id FROM test_ga",
+      "result": [
+        [
+          {
+            "game_id": 1,
+            "my_cards": [
+              {
+                "rank": "9",
+                "suit": "hearts",
+                "points": 0,
+                "card_id": 7
+              },
+              {
+                "rank": "J",
+                "suit": "hearts",
+                "points": 2,
+                "card_id": 8
+              },
+              {
+                "rank": "Q",
+                "suit": "hearts",
+                "points": 3,
+                "card_id": 9
+              },
+              {
+                "rank": "K",
+                "suit": "hearts",
+                "points": 4,
+                "card_id": 10
+              },
+              {
+                "rank": "10",
+                "suit": "hearts",
+                "points": 10,
+                "card_id": 11
+              },
+              {
+                "rank": "A",
+                "suit": "hearts",
+                "points": 11,
+                "card_id": 12
+              }
+            ],
+            "my_score": 0,
+            "round_id": 1,
+            "trump_suit": "hearts",
+            "round_number": 1
+          }
+        ]
+      ]
+    },
+    {
+      "query": "INSERT INTO test_cards(player, card_id)\nSELECT 'anna', min(h.card_id)\nFROM schnapsen.Cards_in_hand h\nJOIN schnapsen.Play",
+      "result": null
+    },
+    {
+      "query": "INSERT INTO test_cards(player, card_id)\nSELECT 'boris', min(h.card_id)\nFROM schnapsen.Cards_in_hand h\nJOIN schnapsen.Pla",
+      "result": null
+    },
+    {
+      "query": "SELECT schnapsen.play_card(\n    (SELECT token FROM test_tokens WHERE player = 'anna'),\n    (SELECT id FROM test_game),\n ",
+      "result": [
+        [
+          {
+            "status": "waiting_for_opponent",
+            "card_played": 1
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.play_card(\n    (SELECT token FROM test_tokens WHERE player = 'boris'),\n    (SELECT id FROM test_game),\n",
+      "result": [
+        [
+          {
+            "points": 0,
+            "status": "trick_completed",
+            "winner_player_id": 1
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT m.id, p.login, m.start_time\nFROM schnapsen.Moves m\nJOIN schnapsen.Players p ON p.id = m.player_id\nWHERE p.game_id",
+      "result": [
+        [
+          1,
+          "anna",
+          "2026-11-25 21:22:05.783125"
+        ],
+        [
+          2,
+          "boris",
+          "2026-11-25 21:22:05.783125"
+        ]
+      ]
+    },
+    {
+      "query": "SELECT t.id AS trick_id, t.round_id, winner.login AS winner,\n       c.suit, c.rank\nFROM schnapsen.Tricks t\nJOIN schnapse",
+      "result": [
+        [
+          1,
+          1,
+          "anna",
+          "spades",
+          "9"
+        ],
+        [
+          1,
+          1,
+          "anna",
+          "hearts",
+          "9"
+        ]
+      ]
+    },
+    {
+      "query": "SELECT p.login, p.round_score\nFROM schnapsen.Players p\nWHERE p.game_id = (SELECT id FROM test_game)\nORDER BY p.seat_numb",
+      "result": [
+        [
+          "anna",
+          0
+        ],
+        [
+          "boris",
+          0
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.declare_marriage(\n    (SELECT token FROM test_tokens WHERE player = 'anna'),\n    (SELECT id FROM test_g",
+      "result": [
+        [
+          {
+            "status": "marriage_declared",
+            "bonus_points": 20
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT d.round_id, p.login, d.point_declared\nFROM schnapsen.Schnapsen_declarations d\nJOIN schnapsen.Players p ON p.id = ",
+      "result": [
+        [
+          1,
+          "anna",
+          20
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.declare_schnapsen(\n    (SELECT token FROM test_tokens WHERE player = 'anna'),\n    (SELECT id FROM test_",
+      "result": [
+        [
+          {
+            "score": 0,
+            "status": "false_schnapsen"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT * FROM schnapsen.Games\nWHERE id = (SELECT id FROM test_game)",
+      "result": [
+        [
+          1,
+          60,
+          7
+        ]
+      ]
+    },
+    {
+      "query": "SELECT p.login, p.seat_number, p.round_score\nFROM schnapsen.Players p\nWHERE p.game_id = (SELECT id FROM test_game)\nORDER",
+      "result": [
+        [
+          "anna",
+          1,
+          0
+        ],
+        [
+          "boris",
+          2,
+          0
+        ]
+      ]
+    },
+    {
+      "query": "SELECT * FROM schnapsen.Rounds\nWHERE game_id = (SELECT id FROM test_game)\nORDER BY round_number",
+      "result": [
+        [
+          1,
+          1,
+          "hearts",
+          1
+        ]
+      ]
+    },
+    {
+      "query": "SELECT * FROM schnapsen.Cards_in_hand\nORDER BY player_id, card_id",
+      "result": [
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          12,
+          2
+        ]
+      ]
+    },
+    {
+      "query": "SELECT * FROM schnapsen.Cards_in_trick\nORDER BY trick_id, card_id",
+      "result": [
+        [
+          1,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ]
+    },
+    {
+      "query": "SELECT * FROM schnapsen.Tricks\nORDER BY id",
+      "result": [
+        [
+          1,
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.leave_game(\n    (SELECT token FROM test_tokens WHERE player = 'boris'),\n    (SELECT id FROM test_game)\n",
+      "result": [
+        [
+          {
+            "message": "Вы вышли из игры"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "SELECT schnapsen.logout_user(\n    (SELECT token FROM test_tokens WHERE player = 'anna')\n) AS anna_logout",
+      "result": [
+        [
+          {
+            "message": "Вы вышли из системы"
+          }
         ]
       ]
     },
@@ -133,15 +772,15 @@
       ]
     },
     {
-      "query": "SELECT count(*) AS boris_tokens_after_logout\nFROM schnapsen.Tokens\nWHERE login = 'boris'",
-      "result": [
-        [
-          1
-        ]
-      ]
+      "query": "DROP TABLE test_cards",
+      "result": null
     },
     {
       "query": "DROP TABLE test_tokens",
+      "result": null
+    },
+    {
+      "query": "DROP TABLE test_game",
       "result": null
     }
   ]

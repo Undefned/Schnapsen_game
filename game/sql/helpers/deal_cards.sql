@@ -8,6 +8,10 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, schnapsen AS $$
 BEGIN
+    INSERT INTO Ranks(rank, points) VALUES
+        ('9', 0), ('J', 2), ('Q', 3), ('K', 4), ('10', 10), ('A', 11)
+    ON CONFLICT (rank) DO NOTHING;
+
     INSERT INTO Cards (suit, rank, game_id)
     SELECT s.suit, r.rank, p_game_id
     FROM unnest(ARRAY['spades', 'hearts', 'diamonds', 'clubs']) s(suit)
