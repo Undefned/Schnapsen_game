@@ -1,0 +1,27 @@
+SELECT m.name
+FROM s335141.modules m
+left join s335141.disciplines_in_modules dim
+ on m.id_isu = dim.id_module
+left join s335141.rpd rpd
+ on rpd.id_isu = dim.id_rpd
+left join s335141.disciplines d
+ on d.id = rpd.id_discipline
+where dim.id is null;
+
+
+SELECT *
+from s335141.rpd
+where id_isu in(
+ select id_rpd
+ from s335141.semester_rpd
+ where number_from_start = 1
+);
+
+select avg(tot_h)
+from (
+ select sr,id_rpd, sum(w.hours) as tot_h
+ from s335141.semester_rpd sr
+ join s335141.workloads w
+ on w.id_sem = sr.id
+ group by sr.id_rpd
+);

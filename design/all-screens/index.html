@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Шнопс 66 — Все экраны</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── NAV ── */
+    #nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 9999;
+      background: #111; display: flex; gap: 4px; padding: 8px 16px;
+      border-bottom: 2px solid #333; font-family: 'Inter', sans-serif;
+    }
+    #nav button {
+      padding: 6px 16px; border-radius: 6px; border: 1.5px solid #444;
+      background: #1a1a1a; color: #aaa; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: all .15s;
+    }
+    #nav button.active { background: #e8a020; color: #111; border-color: #e8a020; }
+    #nav button:hover:not(.active) { border-color: #e8a020; color: #e8a020; }
+
+    /* ── SCREENS WRAPPER ── */
+    .screen {
+      display: none;
+      width: 1440px;
+      min-height: 810px;
+      margin-top: 44px;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+    }
+    .screen.active { display: block; }
+
+    /* ══════════════════════════════════════════
+       SHARED COMPONENTS
+    ══════════════════════════════════════════ */
+    .topbar {
+      height: 56px;
+      background: #141414;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      justify-content: space-between;
+    }
+    .logo-inline {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .logo-badge {
+      width: 36px; height: 36px; background: #e8a020; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; color: #1a1a1a;
+    }
+    .logo-label { font-size: 17px; font-weight: 800; }
+    .logo-label .w { color: #fff; }
+    .logo-label .o { color: #e8a020; }
+
+
+    /* ══════════════════════════════════════════
+       SCREEN 1 — LOGIN
+    ══════════════════════════════════════════ */
+    #s1 { display: flex; overflow: hidden; height: 810px; margin-top: 44px; }
+
+    .s1-left {
+      width: 50%; height: 100%;
+      background: #1e3d2b;
+      background-image:
+        radial-gradient(ellipse at 20% 80%, rgba(0,0,0,.35) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,0,0,.15) 0%, transparent 50%);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 72px 80px;
+    }
+    .cards-wrap { position: relative; width: 235px; height: 140px; margin-bottom: 44px; }
+    .play-card {
+      width: 88px; height: 120px; background: #fff; border-radius: 8px;
+      border: 1.5px solid #ddd; position: absolute;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 8px 10px; box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    }
+    .play-card .r { font-size: 20px; font-weight: 700; color: #111; line-height: 1; }
+    .play-card .rb { font-size: 20px; font-weight: 700; color: #111; line-height: 1; align-self: flex-end; transform: rotate(180deg); }
+    .card-a { left: 0; top: 12px; transform: rotate(-8deg); z-index: 1; }
+    .card-k { left: 72px; top: 0; transform: rotate(4deg); z-index: 2; }
+    .card-66-deco {
+      left: 148px; top: 18px; width: 76px; height: 100px;
+      background: #2a2a2a; border: 2px dashed #e8a020; border-radius: 8px;
+      position: absolute; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 3;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+    }
+    .card-66-deco .n66 { font-size: 28px; font-weight: 900; color: #e8a020; line-height: 1; }
+    .card-66-deco .lbl { font-size: 12px; font-weight: 500; color: #e8a020; margin-top: 2px; }
+
+    .s1-headline { font-size: 42px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 18px; }
+    .s1-headline .acc { color: #e8a020; }
+    .s1-sub { font-size: 16px; color: rgba(255,255,255,.7); line-height: 1.6; max-width: 380px; margin-bottom: 36px; }
+    .s1-tags { display: flex; gap: 28px; margin-bottom: 36px; }
+    .s1-tags span { font-size: 15px; font-weight: 600; color: #e8a020; }
+    .s1-infobar {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(0,0,0,.3); border-radius: 8px;
+      padding: 10px 16px; width: fit-content;
+    }
+    .s1-infobar .dot { width: 6px; height: 6px; border-radius: 50%; background: #e8a020; }
+    .s1-infobar span { font-size: 13px; color: rgba(255,255,255,.6); }
+    .s1-infobar .sep { width: 1px; height: 14px; background: rgba(255,255,255,.2); }
+
+    .s1-right {
+      width: 50%; height: 100%;
+      background: #1a1a1a;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .form-box { width: 460px; }
+    .form-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .form-logo-badge {
+      width: 52px; height: 52px; background: #e8a020; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: #1a1a1a;
+    }
+    .form-logo-text .ft { font-size: 22px; font-weight: 800; }
+    .form-logo-text .ft .w { color: #fff; }
+    .form-logo-text .ft .o { color: #e8a020; }
+    .form-logo-text .fs { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 2px; }
+
+    .tabs-sw {
+      display: flex; background: #272727; border-radius: 10px;
+      padding: 4px; margin-bottom: 20px;
+    }
+    .tabs-sw .tb {
+      flex: 1; height: 44px; border: none; background: transparent;
+      font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600;
+      color: rgba(255,255,255,.4); cursor: pointer; border-radius: 7px;
+    }
+    .tabs-sw .tb.on { background: #e8a020; color: #1a1a1a; }
+
+    .form-card { background: #242424; border-radius: 14px; padding: 28px; margin-bottom: 18px; }
+    .f-label { font-size: 14px; font-weight: 500; color: rgba(255,255,255,.7); display: block; margin-bottom: 7px; }
+    .f-group { margin-bottom: 18px; }
+    .f-group:last-child { margin-bottom: 0; }
+    .f-wrap { position: relative; }
+    .f-input {
+      width: 100%; height: 48px; background: #2e2e2e; border: 1.5px solid #3a3a3a;
+      border-radius: 8px; font-family: 'Inter',sans-serif; font-size: 15px;
+      color: #fff; padding: 0 16px; outline: none;
+    }
+    .f-input::placeholder { color: rgba(255,255,255,.3); }
+    .f-input.err { border-color: #d32f2f; }
+    .f-input.pad-r { padding-right: 60px; }
+    .f-toggle {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; font-family: 'Inter',sans-serif;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,.4); cursor: pointer;
+    }
+    .f-err { font-size: 12px; color: #e53935; margin-top: 5px; }
+    .btn-submit {
+      width: 100%; height: 52px; background: #e8a020; border: none;
+      border-radius: 10px; font-family: 'Inter',sans-serif; font-size: 16px;
+      font-weight: 700; color: #1a1a1a; cursor: pointer; letter-spacing: .3px; margin-top: 4px;
+    }
+    .form-hint { text-align: center; font-size: 13px; color: rgba(255,255,255,.35); margin-top: 14px; line-height: 1.5; }
+    .form-hint em { color: rgba(255,255,255,.55); }
+    .form-footer { text-align: center; font-size: 12px; color: rgba(255,255,255,.25); }
+
+
+    /* ══════════════════════════════════════════
+       SCREEN 2 — LOBBY
+    ══════════════════════════════════════════ */
+    #s2 { background: #141414; min-height: 810px; }
+    .s2-topbar {
+      height: 56px; background: #141414; border-bottom: 1px solid #252525;
+      display: flex; align-items: center; padding: 0 28px; justify-content: space-between;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 10px;
+      padding: 6px 14px 6px 8px;
+    }
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: #4caf50;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .user-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .user-id { font-size: 12px; color: rgba(255,255,255,.35); }
+    .icon-btn {
+      width: 36px; height: 36px; background: #1e1e1e; border: 1px solid #2e2e2e;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(255,255,255,.5); font-size: 16px; margin-left: 8px;
+    }
+
+    .s2-body { display: flex; gap: 20px; padding: 24px 28px; }
+    .s2-main { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+    .s2-side { width: 290px; display: flex; flex-direction: column; gap: 16px; }
+
+    .panel {
+      background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 12px;
+      overflow: hidden;
+    }
+    .panel-inner { padding: 20px; }
+
+    /* Invite row */
+    .invite-row { display: flex; gap: 10px; }
+    .invite-input {
+      flex: 1; height: 44px; background: #252525; border: 1.5px solid #333;
+      border-radius: 8px; font-family: 'Inter',sans-serif; font-size: 14px;
+      color: #fff; padding: 0 14px; outline: none;
+    }
+    .invite-input::placeholder { color: rgba(255,255,255,.3); }
+    .btn-orange {
+      height: 44px; padding: 0 22px; background: #e8a020; border: none;
+      border-radius: 8px; font-family: 'Inter',sans-serif; font-size: 14px;
+      font-weight: 700; color: #1a1a1a; cursor: pointer; white-space: nowrap;
+    }
+    .invite-label {
+      font-size: 13px; color: rgba(255,255,255,.4); display: block; margin-bottom: 10px;
+    }
+
+    /* Incoming invitations */
+    .section-title {
+      font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 14px;
+    }
+    .inv-item {
+      display: flex; align-items: center; gap: 12px;
+      background: #252525; border-radius: 10px; padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .inv-item:last-child { margin-bottom: 0; }
+    .inv-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .inv-info { flex: 1; }
+    .inv-info .inv-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .inv-info .inv-params { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 1px; }
+    .inv-actions { display: flex; gap: 8px; }
+    .btn-green {
+      height: 36px; padding: 0 16px; background: #2e7d32; border: none;
+      border-radius: 7px; font-family: 'Inter',sans-serif; font-size: 13px;
+      font-weight: 600; color: #fff; cursor: pointer;
+    }
+    .btn-gray {
+      height: 36px; padding: 0 16px; background: transparent;
+      border: 1.5px solid #3a3a3a; border-radius: 7px;
+      font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,.55); cursor: pointer;
+    }
+
+    /* Table */
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl thead tr th {
+      text-align: left; font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,.35); letter-spacing: .7px; text-transform: uppercase;
+      padding: 0 16px 10px;
+    }
+    .tbl tbody tr {
+      border-bottom: 1px solid #252525;
+    }
+    .tbl tbody tr:last-child { border-bottom: none; }
+    .tbl tbody tr td {
+      padding: 14px 16px; font-size: 14px; color: rgba(255,255,255,.85);
+    }
+    .tbl-id { color: #e8a020 !important; font-weight: 700; }
+    .badge-open {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      background: rgba(76,175,80,.15); color: #4caf50; font-size: 12px; font-weight: 600;
+    }
+    .badge-playing {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      background: rgba(255,255,255,.07); color: rgba(255,255,255,.4); font-size: 12px; font-weight: 600;
+    }
+    .btn-join {
+      height: 36px; padding: 0 18px; background: #e8a020; border: none;
+      border-radius: 7px; font-family: 'Inter',sans-serif; font-size: 13px;
+      font-weight: 700; color: #1a1a1a; cursor: pointer;
+    }
+    .btn-join-dis {
+      height: 36px; padding: 0 18px; background: transparent;
+      border: 1.5px solid #2e2e2e; border-radius: 7px;
+      font-family: 'Inter',sans-serif; font-size: 13px;
+      font-weight: 600; color: rgba(255,255,255,.25); cursor: default;
+    }
+
+    /* Sidebar */
+    .leaderboard { background: #1a3326; border: 1px solid #2a4a36; border-radius: 12px; padding: 20px; }
+    .lb-title { font-size: 14px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 4px; }
+    .lb-icon { text-align: center; font-size: 22px; margin-bottom: 8px; }
+    .lb-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank { font-size: 13px; color: rgba(255,255,255,.5); }
+    .lb-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .lb-wins { font-size: 13px; color: rgba(255,255,255,.5); }
+    .lb-row.first .lb-name { color: #e8a020; }
+
+    .rules-panel { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 12px; padding: 16px; }
+    .rules-panel p { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+
+
+    /* ══════════════════════════════════════════
+       SCREEN 3 — CREATE GAME MODAL
+    ══════════════════════════════════════════ */
+    #s3 { background: #111; display: flex; align-items: center; justify-content: center; height: 810px; }
+    .s3-bg {
+      position: absolute; inset: 44px 0 0 0; background: #141414;
+      display: flex; align-items: flex-start; padding: 0 28px;
+    }
+    .s3-topbar {
+      height: 56px; background: #141414; border-bottom: 1px solid #252525;
+      display: flex; align-items: center; padding: 0 28px;
+      position: absolute; top: 0; left: 0; right: 0;
+    }
+    .modal-overlay {
+      position: absolute; inset: 44px 0 0 0;
+      background: rgba(0,0,0,.75);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal {
+      background: #242424; border: 1px solid #333; border-radius: 16px;
+      padding: 32px 36px; width: 520px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.7);
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;
+    }
+    .modal-title { font-size: 22px; font-weight: 700; color: #fff; }
+    .modal-close {
+      width: 36px; height: 36px; background: #333; border: none; border-radius: 8px;
+      color: rgba(255,255,255,.6); font-size: 16px; cursor: pointer; font-family: 'Inter',sans-serif;
+    }
+    .modal-label { font-size: 14px; color: rgba(255,255,255,.6); margin-bottom: 10px; display: block; }
+    .num-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 24px; }
+    .num-input-wrap {
+      flex: 1; height: 60px; background: #1e1e1e;
+      border: 2px solid #e8a020; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .num-input-wrap span { font-size: 28px; font-weight: 700; color: #fff; }
+    .num-stepper { display: flex; flex-direction: column; gap: 4px; }
+    .num-stepper button {
+      width: 36px; height: 26px; background: #333; border: none; border-radius: 6px;
+      color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter',sans-serif;
+    }
+    .num-presets { display: flex; gap: 8px; align-items: center; }
+    .preset-btn {
+      width: 52px; height: 60px; background: #1e1e1e;
+      border: 1.5px solid #333; border-radius: 10px;
+      font-family: 'Inter',sans-serif; font-size: 17px; font-weight: 700;
+      color: rgba(255,255,255,.6); cursor: pointer;
+    }
+    .preset-btn.on { background: #e8a020; border-color: #e8a020; color: #1a1a1a; }
+
+    .pts-row { display: flex; gap: 10px; margin-bottom: 24px; }
+    .pts-btn {
+      flex: 1; height: 68px; background: #1e1e1e;
+      border: 1.5px solid #333; border-radius: 12px;
+      font-family: 'Inter',sans-serif; font-size: 22px; font-weight: 700;
+      color: rgba(255,255,255,.6); cursor: pointer;
+    }
+    .pts-btn.on { background: #e8a020; border-color: #e8a020; color: #1a1a1a; }
+
+    .modal-info {
+      background: #1e1e1e; border: 1px solid #333; border-radius: 10px;
+      padding: 12px 16px; margin-bottom: 28px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .modal-info .info-icon { color: rgba(255,255,255,.4); font-size: 15px; }
+    .modal-info span { font-size: 13px; color: rgba(255,255,255,.55); }
+
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+    .btn-cancel {
+      height: 48px; padding: 0 28px; background: transparent;
+      border: 1.5px solid #3a3a3a; border-radius: 10px;
+      font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600;
+      color: rgba(255,255,255,.6); cursor: pointer;
+    }
+    .btn-create {
+      height: 48px; padding: 0 36px; background: #e8a020; border: none;
+      border-radius: 10px; font-family: 'Inter',sans-serif; font-size: 15px;
+      font-weight: 700; color: #1a1a1a; cursor: pointer;
+    }
+
+
+    /* ══════════════════════════════════════════
+       SCREEN 4 — WAITING ROOM
+    ══════════════════════════════════════════ */
+    #s4 { background: #141414; height: 810px; }
+    .s4-topbar {
+      height: 56px; background: #141414; border-bottom: 1px solid #252525;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+    }
+    .s4-notice {
+      font-size: 13px; color: rgba(255,255,255,.4);
+      background: #1e1e1e; border: 1px solid #2a2a2a;
+      border-radius: 8px; padding: 6px 14px;
+    }
+    .s4-body {
+      display: flex; align-items: center; justify-content: center;
+      height: calc(810px - 56px);
+    }
+    .waiting-card {
+      background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 16px;
+      padding: 40px 48px; width: 560px; text-align: center;
+    }
+    .spinner-wrap { margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
+    .spinner {
+      width: 52px; height: 52px; border: 3px solid #2e2e2e;
+      border-top-color: #e8a020; border-right-color: #e8a020;
+      border-radius: 50%;
+    }
+    .waiting-title { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+    .waiting-params { display: flex; gap: 10px; justify-content: center; margin-bottom: 28px; }
+    .param-chip {
+      background: #252525; border-radius: 20px; padding: 7px 16px;
+      font-size: 13px; color: rgba(255,255,255,.65);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .param-chip .pico { color: rgba(255,255,255,.4); }
+
+    .player-row {
+      background: #252525; border-radius: 12px; padding: 14px 18px;
+      display: flex; align-items: center; gap: 14px; margin-bottom: 10px; text-align: left;
+    }
+    .player-row.ready { background: #1a3326; border: 1px solid #2a4a36; }
+    .player-row.empty { border: 1.5px dashed #2e2e2e; background: transparent; }
+    .pr-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .pr-info { flex: 1; }
+    .pr-info .pr-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .pr-info .pr-id { font-size: 12px; color: rgba(255,255,255,.35); margin-top: 2px; }
+    .badge-ready {
+      background: #4caf50; color: #fff; font-size: 12px; font-weight: 700;
+      padding: 4px 12px; border-radius: 6px; letter-spacing: .5px;
+    }
+    .badge-waiting {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: rgba(255,255,255,.45);
+    }
+    .badge-waiting .ydot { width: 8px; height: 8px; border-radius: 50%; background: #e8a020; }
+
+    .link-row {
+      background: #252525; border-radius: 10px; padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 16px 0;
+    }
+    .link-row .link-url { font-size: 14px; color: rgba(255,255,255,.55); }
+    .link-row .link-copy {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: #e8a020; background: none;
+      border: none; cursor: pointer; font-family: 'Inter',sans-serif;
+    }
+
+    .btn-leave {
+      width: 100%; height: 48px; background: transparent;
+      border: 1.5px solid #3a3a3a; border-radius: 10px;
+      font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600;
+      color: rgba(255,255,255,.6); cursor: pointer;
+    }
+
+
+    /* ══════════════════════════════════════════
+       SCREEN 5 — GAME BOARD
+    ══════════════════════════════════════════ */
+    #s5 { background: #111; height: 810px; display: flex; flex-direction: column; }
+
+    /* Top bar */
+    .game-topbar {
+      height: 72px; background: #111; border-bottom: 1px solid #1e1e1e;
+      display: flex; align-items: center; padding: 0 20px; gap: 16px;
+    }
+    .opp-info { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+    .opp-avatar {
+      width: 44px; height: 44px; border-radius: 50%; background: #7b52ab;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700; color: #fff;
+    }
+    .opp-name { font-size: 16px; font-weight: 700; color: #fff; }
+    .opp-status { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 1px; }
+
+    .back-cards { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .back-card {
+      width: 56px; height: 76px; background: #1e1e1e;
+      border: 1.5px solid #e8a020; border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .back-card .bc-num { font-size: 17px; font-weight: 900; color: #e8a020; line-height: 1; }
+    .back-card .bc-lbl { font-size: 9px; font-weight: 600; color: #e8a020; margin-top: 2px; letter-spacing: .3px; }
+
+    .score-area { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+    .score-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.4); letter-spacing: .8px; text-transform: uppercase; text-align: right; }
+    .score-num { font-size: 32px; font-weight: 800; color: #fff; text-align: right; }
+    .timer-circle {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 3px solid #333; border-top-color: #4caf50; border-right-color: #4caf50;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #fff;
+    }
+
+    /* Main game area */
+    .game-main {
+      flex: 1; display: flex; gap: 0; overflow: hidden;
+    }
+
+    /* Left panel */
+    .game-left {
+      width: 240px; background: #161e18;
+      border-right: 1px solid #1e2e20; padding: 20px 18px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .panel-lbl {
+      font-size: 10px; font-weight: 600; color: rgba(255,255,255,.4);
+      letter-spacing: 1px; text-transform: uppercase; text-align: center;
+      margin-bottom: 8px;
+    }
+    .trump-badge {
+      background: #e8a020; border-radius: 10px; padding: 12px 20px;
+      text-align: center; font-size: 20px; font-weight: 800; color: #1a1a1a;
+    }
+    .deck-card {
+      width: 80px; height: 108px; background: #1a2a1e;
+      border: 2px solid #e8a020; border-radius: 10px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 3px 3px 0 #e8a020;
+    }
+    .deck-card .dc-num { font-size: 24px; font-weight: 800; color: #e8a020; }
+    .deck-card .dc-lbl { font-size: 11px; color: rgba(232,160,32,.7); margin-top: 2px; }
+    .turn-badge {
+      background: #2e7d32; border-radius: 8px; padding: 8px 14px;
+      text-align: center; font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .deck-note { font-size: 11px; color: rgba(255,255,255,.3); text-align: center; }
+
+    /* Center board */
+    .game-center {
+      flex: 1; background: #1a2b1e; position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .trick-label {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 20px;
+      padding: 7px 20px; font-size: 13px; color: rgba(255,255,255,.65);
+      white-space: nowrap;
+    }
+    .trick-label .hl { color: #e8a020; font-weight: 600; }
+    .trick-slots { display: flex; align-items: center; gap: 28px; }
+    .trick-slot-filled {
+      width: 104px; height: 140px; background: #fff; border-radius: 10px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 10px 12px; box-shadow: 0 6px 20px rgba(0,0,0,.5);
+    }
+    .trick-slot-filled .tr { font-size: 22px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+    .trick-slot-filled .trb { font-size: 22px; font-weight: 700; color: #1a1a1a; line-height: 1; align-self: flex-end; transform: rotate(180deg); }
+    .vs-badge {
+      width: 40px; height: 40px; background: #e8a020; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #1a1a1a;
+    }
+    .trick-slot-empty {
+      width: 104px; height: 140px; border: 2px dashed #e8a020;
+      border-radius: 10px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px;
+    }
+    .trick-slot-empty .slot-text { font-size: 13px; color: rgba(255,255,255,.5); }
+    .your-turn-badge {
+      background: #e8a020; color: #1a1a1a; font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 6px;
+    }
+    .card-owner-label {
+      text-align: center; font-size: 12px; color: rgba(255,255,255,.4); margin-top: 8px;
+    }
+    .trick-col { display: flex; flex-direction: column; align-items: center; }
+
+    /* Right panel */
+    .game-right {
+      width: 200px; background: #161e18;
+      border-left: 1px solid #1e2e20; padding: 18px 16px;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .round-title {
+      font-size: 10px; font-weight: 600; color: rgba(255,255,255,.4);
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px;
+    }
+    .score-player { margin-bottom: 14px; }
+    .sp-name { font-size: 13px; color: rgba(255,255,255,.65); margin-bottom: 5px; }
+    .sp-val { font-size: 26px; font-weight: 800; color: #fff; line-height: 1; }
+    .sp-bar { height: 4px; background: #2a2a2a; border-radius: 2px; margin-top: 6px; }
+    .sp-bar-fill { height: 100%; border-radius: 2px; }
+    .to-schnaps {
+      font-size: 12px; color: #e8a020; margin-top: 10px;
+    }
+    .marriage-hint {
+      margin-top: auto; background: #1e2a20; border: 1px solid #2a4a2a;
+      border-radius: 8px; padding: 10px 12px;
+      font-size: 12px; color: rgba(255,255,255,.65);
+    }
+
+    /* Bottom bar */
+    .game-bottom {
+      height: 120px; background: #111; border-top: 1px solid #1e1e1e;
+      display: flex; align-items: center; padding: 0 20px; gap: 20px;
+    }
+    .my-info { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+    .my-timer {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: conic-gradient(#e8a020 0deg 158deg, #2a2a2a 158deg 360deg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .my-timer-inner {
+      width: 40px; height: 40px; background: #111;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: #fff;
+    }
+    .my-name { font-size: 14px; font-weight: 700; color: #fff; }
+    .my-score { font-size: 22px; font-weight: 800; color: #fff; }
+    .my-time-warn {
+      background: #b71c1c; border-radius: 6px; padding: 3px 8px;
+      font-size: 12px; font-weight: 700; color: #fff; margin-top: 2px; display: inline-block;
+    }
+
+    .hand-cards { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .hand-card {
+      width: 76px; height: 104px; background: #fff; border-radius: 9px;
+      border: 2px solid #ddd; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 8px 9px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.4); cursor: pointer; transition: transform .15s;
+    }
+    .hand-card:hover { transform: translateY(-8px); }
+    .hand-card.selected { border-color: #e8a020; border-width: 2.5px; }
+    .hand-card.disabled { opacity: .45; }
+    .hand-card .hr { font-size: 18px; font-weight: 700; color: #111; line-height: 1; }
+    .hand-card .hrb { font-size: 18px; font-weight: 700; color: #111; line-height: 1; align-self: flex-end; transform: rotate(180deg); }
+
+    .action-btns { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; width: 180px; }
+    .btn-play {
+      height: 48px; background: #e8a020; border: none; border-radius: 10px;
+      font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 700;
+      color: #1a1a1a; cursor: pointer;
+    }
+    .btns-row2 { display: flex; gap: 8px; }
+    .btn-marriage {
+      flex: 1; height: 40px; background: #e8a020; border: none; border-radius: 8px;
+      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 700;
+      color: #1a1a1a; cursor: pointer;
+    }
+    .btn-schnaps {
+      flex: 1; height: 40px; background: transparent;
+      border: 1.5px solid #e8a020; border-radius: 8px;
+      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 700;
+      color: #e8a020; cursor: pointer;
+    }
+    .btn-icon {
+      width: 40px; height: 40px; background: #1e1e1e;
+      border: 1.5px solid #2e2e2e; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.4); cursor: pointer; font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div id="nav">
+  <button class="active" onclick="show(1)">1 · Вход</button>
+  <button onclick="show(2)">2 · Лобби</button>
+  <button onclick="show(3)">3 · Создать игру</button>
+  <button onclick="show(4)">4 · Ожидание</button>
+  <button onclick="show(5)">5 · Игровой стол</button>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 1 — LOGIN
+════════════════════════════════════ -->
+<div id="s1" class="screen active">
+  <div class="s1-left">
+    <div class="cards-wrap">
+      <div class="play-card card-a"><span class="r">A</span><span class="rb">A</span></div>
+      <div class="play-card card-k"><span class="r">K</span><span class="rb">K</span></div>
+      <div class="card-66-deco"><span class="n66">66</span><span class="lbl">шнопс</span></div>
+    </div>
+    <h1 class="s1-headline">Шнопс 66 —<br><span class="acc">игра, где решают</span> нервы и козырь.</h1>
+    <p class="s1-sub">Марьяж +40, шнапс за 66 очков, таймер на каждый ход. Вызови друга по ID и докажи, кто здесь шнапсер.</p>
+    <div class="s1-tags">
+      <span>До 7 поинтов</span>
+      <span>Ход 30 сек</span>
+      <span>Дуэль 1 на 1</span>
+    </div>
+    <div class="s1-infobar">
+      <div class="dot"></div>
+      <span>24 карты: 9 J Q K 10 A</span>
+      <div class="sep"></div>
+      <span>Козырь подсвечен золотом</span>
+    </div>
+  </div>
+  <div class="s1-right">
+    <div class="form-box">
+      <div class="form-logo">
+        <div class="form-logo-badge">66</div>
+        <div class="form-logo-text">
+          <div class="ft"><span class="w">ШНОПС</span><span class="o">66</span></div>
+          <div class="fs">Schnapsen · 2 игрока · 24 карты</div>
+        </div>
+      </div>
+      <div class="tabs-sw">
+        <button class="tb on">Вход</button>
+        <button class="tb">Регистрация</button>
+      </div>
+      <div class="form-card">
+        <div class="f-group">
+          <label class="f-label">Логин</label>
+          <div class="f-wrap">
+            <input class="f-input" type="text" placeholder="schnapser_01" value="schnapser_01" />
+          </div>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Пароль</label>
+          <div class="f-wrap">
+            <input class="f-input err pad-r" type="password" value="password123" />
+            <button class="f-toggle">hide</button>
+          </div>
+          <div class="f-err">Неверный логин или пароль</div>
+        </div>
+        <button class="btn-submit">Войти</button>
+        <div class="form-hint">Нет аккаунта? Создай за 10 секунд — вкладка<br><em>«Регистрация»</em></div>
+      </div>
+      <div class="form-footer">Нажимая «Войти», ты принимаешь правила честной игры</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 2 — LOBBY
+════════════════════════════════════ -->
+<div id="s2" class="screen">
+  <div class="s2-topbar">
+    <a class="logo-inline">
+      <div class="logo-badge">66</div>
+      <div class="logo-label"><span class="w">ШНОПС</span><span class="o">66</span></div>
+    </a>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="user-chip">
+        <div class="user-avatar" style="background:#4caf50;">MK</div>
+        <div>
+          <div class="user-name">Max_Krams</div>
+          <div class="user-id">ID: user_8841</div>
+        </div>
+      </div>
+      <div class="icon-btn">→</div>
+    </div>
+  </div>
+
+  <div class="s2-body">
+    <div class="s2-main">
+
+      <!-- Invite -->
+      <div class="panel">
+        <div class="panel-inner">
+          <label class="invite-label">Пригласить игрока по ID</label>
+          <div class="invite-row">
+            <input class="invite-input" type="text" placeholder="user_12345" />
+            <button class="btn-orange">Отправить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incoming -->
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="section-title">Входящие приглашения · 2</div>
+          <div class="inv-item">
+            <div class="inv-avatar" style="background:#4f9ef7;">AL</div>
+            <div class="inv-info">
+              <div class="inv-name">Anna_L приглашает вас</div>
+              <div class="inv-params">30 сек · до 7</div>
+            </div>
+            <div class="inv-actions">
+              <button class="btn-green">Принять</button>
+              <button class="btn-gray">Отклонить</button>
+            </div>
+          </div>
+          <div class="inv-item">
+            <div class="inv-avatar" style="background:#9c59a8;">JO</div>
+            <div class="inv-info">
+              <div class="inv-name">Sepp_J приглашает вас</div>
+              <div class="inv-params">15 сек · до 5</div>
+            </div>
+            <div class="inv-actions">
+              <button class="btn-green">Принять</button>
+              <button class="btn-gray">Отклонить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Open games -->
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="table-header">
+            <div class="section-title" style="margin:0">Открытые игры</div>
+            <button class="btn-orange">+ Создать игру</button>
+          </div>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>ID</th><th>ТАЙМЕР</th><th>ДО ПОБЕДЫ</th><th>ИГРОКИ</th><th>СТАТУС</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tbl-id">#4821</td>
+                <td>⏱ 30 сек</td><td>♟ 7</td><td>1/2</td>
+                <td><span class="badge-open">открыта</span></td>
+                <td><button class="btn-join">Присоединиться</button></td>
+              </tr>
+              <tr>
+                <td class="tbl-id">#4820</td>
+                <td>⏱ 15 сек</td><td>♟ 5</td><td>1/2</td>
+                <td><span class="badge-open">открыта</span></td>
+                <td><button class="btn-join">Присоединиться</button></td>
+              </tr>
+              <tr>
+                <td class="tbl-id" style="color:rgba(255,255,255,.35)!important">#4819</td>
+                <td style="color:rgba(255,255,255,.35)">⏱ 60 сек</td>
+                <td style="color:rgba(255,255,255,.35)">♟ 11</td>
+                <td style="color:rgba(255,255,255,.35)">2/2</td>
+                <td><span class="badge-playing">идёт игра</span></td>
+                <td><button class="btn-join-dis">Присоединиться</button></td>
+              </tr>
+              <tr>
+                <td class="tbl-id" style="color:rgba(255,255,255,.35)!important">#4818</td>
+                <td style="color:rgba(255,255,255,.35)">⏱ 30 сек</td>
+                <td style="color:rgba(255,255,255,.35)">♟ 7</td>
+                <td style="color:rgba(255,255,255,.35)">2/2</td>
+                <td><span class="badge-playing">идёт игра</span></td>
+                <td><button class="btn-join-dis">Присоединиться</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="s2-side">
+      <div class="leaderboard">
+        <div class="lb-icon">👑</div>
+        <div class="lb-title">Рейтинг недели</div>
+        <div style="height:12px"></div>
+        <div class="lb-row first">
+          <span class="lb-rank">1 ·</span>
+          <span class="lb-name">Anna_L</span>
+          <span class="lb-wins">12 побед</span>
+        </div>
+        <div class="lb-row">
+          <span class="lb-rank">2 ·</span>
+          <span class="lb-name">Max_Krams</span>
+          <span class="lb-wins">10 побед</span>
+        </div>
+        <div class="lb-row">
+          <span class="lb-rank">3 ·</span>
+          <span class="lb-name">Sepp_J</span>
+          <span class="lb-wins">9 побед</span>
+        </div>
+      </div>
+      <div class="rules-panel">
+        <p>Как играть: взятки старше козыря.<br>Марьяж K+Q — +20, козырный +40.<br>Первый, кто набрал 66 — кричи «Шнапс!»</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 3 — CREATE GAME MODAL
+════════════════════════════════════ -->
+<div id="s3" class="screen" style="height:810px;position:relative;background:#141414;">
+  <!-- Blurred bg topbar -->
+  <div style="height:56px;background:#141414;border-bottom:1px solid #252525;display:flex;align-items:center;padding:0 28px;">
+    <a class="logo-inline">
+      <div class="logo-badge">66</div>
+      <div class="logo-label"><span class="w">ШНОПС</span><span class="o">66</span></div>
+    </a>
+  </div>
+
+  <!-- Modal overlay -->
+  <div class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Создать новую игру</div>
+        <button class="modal-close">✕</button>
+      </div>
+
+      <label class="modal-label">Лимит времени на ход (сек)</label>
+      <div class="num-row">
+        <div class="num-input-wrap"><span>30</span></div>
+        <div class="num-stepper">
+          <button>+</button>
+          <button>−</button>
+        </div>
+        <div class="num-presets">
+          <button class="preset-btn">15</button>
+          <button class="preset-btn on">30</button>
+          <button class="preset-btn">60</button>
+        </div>
+      </div>
+
+      <label class="modal-label">Очков до победы (поинты)</label>
+      <div class="pts-row">
+        <button class="pts-btn">3</button>
+        <button class="pts-btn">5</button>
+        <button class="pts-btn on">7</button>
+        <button class="pts-btn">11</button>
+      </div>
+
+      <div class="modal-info">
+        <span class="info-icon">ⓘ</span>
+        <span>Игра до 7 поинтов&nbsp;&nbsp;·&nbsp;&nbsp;20 минут. Блиц — 15 сек на ход.</span>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel">Отмена</button>
+        <button class="btn-create">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 4 — WAITING ROOM
+════════════════════════════════════ -->
+<div id="s4" class="screen">
+  <div class="s4-topbar">
+    <a class="logo-inline">
+      <div class="logo-badge">66</div>
+      <div class="logo-label"><span class="w">ШНОПС</span><span class="o">66</span></div>
+    </a>
+    <div class="s4-notice">ID игры #4821 · ссылка скопирована</div>
+  </div>
+  <div class="s4-body">
+    <div class="waiting-card">
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+      </div>
+      <div class="waiting-title">Ожидание второго игрока...</div>
+      <div class="waiting-params">
+        <div class="param-chip"><span class="pico">⏱</span> Лимит: 30 сек</div>
+        <div class="param-chip"><span class="pico">♟</span> До победы: 7</div>
+      </div>
+
+      <div class="player-row ready">
+        <div class="pr-avatar" style="background:#4caf50;">MK</div>
+        <div class="pr-info">
+          <div class="pr-name">Max_Krams (вы)</div>
+          <div class="pr-id">user_8841</div>
+        </div>
+        <div class="badge-ready">ГОТОВ</div>
+      </div>
+
+      <div class="player-row empty">
+        <div class="pr-avatar" style="background:#2e2e2e;">👤</div>
+        <div class="pr-info">
+          <div class="pr-name" style="color:rgba(255,255,255,.45)">Ожидание...</div>
+          <div class="pr-id">Слот свободен — отправь ID другу</div>
+        </div>
+        <div class="badge-waiting">
+          <div class="ydot"></div>
+          <span>ждём</span>
+        </div>
+      </div>
+
+      <div class="link-row">
+        <span class="link-url">schnaps.club/g/4821</span>
+        <button class="link-copy">📋 Копировать</button>
+      </div>
+
+      <button class="btn-leave">Выйти из игры</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 5 — GAME BOARD
+════════════════════════════════════ -->
+<div id="s5" class="screen">
+  <!-- Top bar -->
+  <div class="game-topbar">
+    <div class="opp-info">
+      <div class="opp-avatar">AL</div>
+      <div>
+        <div class="opp-name">Anna_L</div>
+        <div class="opp-status">соперник · думает...</div>
+      </div>
+    </div>
+    <div class="back-cards">
+      <div class="back-card"><div class="bc-num">66</div><div class="bc-lbl">ШНОПС</div></div>
+      <div class="back-card"><div class="bc-num">66</div><div class="bc-lbl">ШНОПС</div></div>
+      <div class="back-card"><div class="bc-num">66</div><div class="bc-lbl">ШНОПС</div></div>
+      <div class="back-card"><div class="bc-num">66</div><div class="bc-lbl">ШНОПС</div></div>
+      <div class="back-card"><div class="bc-num">66</div><div class="bc-lbl">ШНОПС</div></div>
+    </div>
+    <div class="score-area">
+      <div>
+        <div class="score-label">СЧЁТ</div>
+        <div class="score-num">34</div>
+      </div>
+      <div class="timer-circle">23</div>
+    </div>
+  </div>
+
+  <!-- Main area -->
+  <div class="game-main">
+
+    <!-- Left panel: trump + deck -->
+    <div class="game-left">
+      <div>
+        <div class="panel-lbl">КОЗЫРЬ</div>
+        <div class="trump-badge">Hearts</div>
+      </div>
+      <div>
+        <div class="panel-lbl">КОЛОДА</div>
+        <div class="deck-card"><div class="dc-num">10</div><div class="dc-lbl">карт</div></div>
+      </div>
+      <div class="turn-badge">Ход: Anna_L</div>
+      <div class="deck-note">Закрыта? Марьяж невозможен</div>
+    </div>
+
+    <!-- Center: trick -->
+    <div class="game-center">
+      <div class="trick-label">
+        Взятка #8 · нужно побить <span class="hl">10</span> или дать масть
+      </div>
+      <div class="trick-slots">
+        <div class="trick-col">
+          <div class="trick-slot-filled">
+            <span class="tr">10</span>
+            <span class="trb">10</span>
+          </div>
+          <div class="card-owner-label">Anna_L</div>
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="trick-col">
+          <div class="trick-slot-empty">
+            <span class="slot-text">Ваш слот</span>
+            <div class="your-turn-badge">Ваш ход!</div>
+          </div>
+          <div class="card-owner-label">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel: round score -->
+    <div class="game-right">
+      <div class="round-title">СЧЁТ РАУНДА</div>
+      <div class="score-player">
+        <div class="sp-name">Вы</div>
+        <div class="sp-val">41</div>
+        <div class="sp-bar"><div class="sp-bar-fill" style="width:62%;background:#e8a020;"></div></div>
+      </div>
+      <div class="score-player">
+        <div class="sp-name">Anna_L</div>
+        <div class="sp-val">34</div>
+        <div class="sp-bar"><div class="sp-bar-fill" style="width:52%;background:#7b52ab;"></div></div>
+      </div>
+      <div class="to-schnaps">До шнапса: 25 очков</div>
+      <div class="marriage-hint">Марьяж K ♥ Q ♥&nbsp;&nbsp;в руке!</div>
+    </div>
+  </div>
+
+  <!-- Bottom bar: hand + actions -->
+  <div class="game-bottom">
+    <div class="my-info">
+      <div class="my-timer"><div class="my-timer-inner">12</div></div>
+      <div>
+        <div class="my-name">Max_Krams (вы)</div>
+        <div class="my-score">41</div>
+        <div class="my-time-warn">12 сек!</div>
+      </div>
+    </div>
+
+    <div class="hand-cards">
+      <div class="hand-card selected"><span class="hr">K</span><span class="hrb">K</span></div>
+      <div class="hand-card"><span class="hr">Q</span><span class="hrb">Q</span></div>
+      <div class="hand-card"><span class="hr">A</span><span class="hrb">A</span></div>
+      <div class="hand-card"><span class="hr">10</span><span class="hrb">10</span></div>
+      <div class="hand-card disabled"><span class="hr">J</span><span class="hrb">J</span></div>
+    </div>
+
+    <div class="action-btns">
+      <button class="btn-play">Сыграть карту</button>
+      <div class="btns-row2">
+        <button class="btn-marriage">Марьяж</button>
+        <button class="btn-schnaps">Шнапс!</button>
+        <div class="btn-icon">⬛</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function show(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('s' + n).classList.add('active');
+    document.querySelectorAll('#nav button')[n - 1].classList.add('active');
+  }
+</script>
+</body>
+</html>

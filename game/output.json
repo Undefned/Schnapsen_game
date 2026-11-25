@@ -1,0 +1,256 @@
+{
+  "meta": {
+    "completed_at_utc": "2026-11-25T14:33:58.121170",
+    "steps": 41,
+    "source_sha256": {
+      "schema.sql": "a6caa6f44c32d2537e33eb7a5ddcc8257d1b86ca3473cc9d032e2a8ed7b98bb1",
+      "functions.sql": "28cd10258f5f36983d299e8441e24e8d2f11c53226238df2caa47585184ec4cd",
+      "scenario.sql": "10ba0df20108639b9c78679e9e9588130263ba2ee41b11ed58f0b4ce20f8b59c"
+    }
+  },
+  "steps": [
+    {
+      "query": "-- ===================================================================\n-- Тестовый сценарий для игры Шнопс 66 (Schnapsen",
+      "result": null
+    },
+    {
+      "query": "-- ===================================================================\n-- 1. РЕГИСТРАЦИЯ И АВТОРИЗАЦИЯ\n-- ==============",
+      "error": "function gen_random_bytes(integer) does not exist\nLINE 1: v_access_token := encode(gen_random_bytes(32), 'base64')\n                                 ^\nHINT:  No function matches the given name and argument types. You might need to add explicit type casts.\nQUERY:  v_access_token := encode(gen_random_bytes(32), 'base64')\nCONTEXT:  PL/pgSQL function generate_tokens(character varying) line 9 at assignment\nPL/pgSQL function register_user(text,text) line 28 at assignment\n"
+    },
+    {
+      "query": "-- Шаг 2: Регистрация второго игрока (Борис)\nSELECT schnapsen.register_user('boris', 'pass456') AS \"2. Регистрация Boris",
+      "error": "function gen_random_bytes(integer) does not exist\nLINE 1: v_access_token := encode(gen_random_bytes(32), 'base64')\n                                 ^\nHINT:  No function matches the given name and argument types. You might need to add explicit type casts.\nQUERY:  v_access_token := encode(gen_random_bytes(32), 'base64')\nCONTEXT:  PL/pgSQL function generate_tokens(character varying) line 9 at assignment\nPL/pgSQL function register_user(text,text) line 28 at assignment\n"
+    },
+    {
+      "query": "-- Шаг 3: Повторная регистрация (должна вернуть ошибку)\nSELECT schnapsen.register_user('anna', 'pass123') AS \"3. Повторн",
+      "error": "function gen_random_bytes(integer) does not exist\nLINE 1: v_access_token := encode(gen_random_bytes(32), 'base64')\n                                 ^\nHINT:  No function matches the given name and argument types. You might need to add explicit type casts.\nQUERY:  v_access_token := encode(gen_random_bytes(32), 'base64')\nCONTEXT:  PL/pgSQL function generate_tokens(character varying) line 9 at assignment\nPL/pgSQL function register_user(text,text) line 28 at assignment\n"
+    },
+    {
+      "query": "-- Шаг 4: Логин Анны\nSELECT schnapsen.login_user('anna', 'pass123') AS \"4. Логин Anna\"",
+      "result": [
+        [
+          {
+            "error": 403,
+            "message": "Неверный логин или пароль"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 5: Логин с неверным паролем (должна вернуть ошибку)\nSELECT schnapsen.login_user('boris', 'wrongpass') AS \"5. Неве",
+      "result": [
+        [
+          {
+            "error": 403,
+            "message": "Неверный логин или пароль"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 6: Правильный логин Бориса\nSELECT schnapsen.login_user('boris', 'pass456') AS \"6. Логин Boris\"",
+      "result": [
+        [
+          {
+            "error": 403,
+            "message": "Неверный логин или пароль"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 7: Смотрим созданные токены\nSELECT login, \n       LEFT(access_token, 20) || '...' as access_token_preview,\n      ",
+      "error": "syntax error at or near \"AS\"\nLINE 6: ORDER BY created_at AS \"7. Токены пользователей\"\n                            ^\n"
+    },
+    {
+      "query": "-- ===================================================================\n-- 2. СОЗДАНИЕ ИГРЫ И ПОДКЛЮЧЕНИЕ\n-- ============",
+      "result": null
+    },
+    {
+      "query": "INSERT INTO test_tokens (player, token)\nSELECT 'anna', access_token FROM schnapsen.Tokens WHERE login = 'anna' LIMIT 1",
+      "result": null
+    },
+    {
+      "query": "INSERT INTO test_tokens (player, token)\nSELECT 'boris', access_token FROM schnapsen.Tokens WHERE login = 'boris' LIMIT 1",
+      "result": null
+    },
+    {
+      "query": "-- Шаг 8: Анна создаёт игру (60 секунд на ход, до 7 поинтов)\nSELECT schnapsen.create_game(\n    (SELECT token FROM test_t",
+      "result": [
+        [
+          {
+            "error": 401,
+            "message": "Невалидный токен"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Сохраняем game_id\nCREATE TEMP TABLE IF NOT EXISTS test_game_id (id INT)",
+      "result": null
+    },
+    {
+      "query": "INSERT INTO test_game_id (id)\nSELECT (result->>'game_id')::INT \nFROM (\n    SELECT schnapsen.create_game(\n        (SELECT",
+      "result": null
+    },
+    {
+      "query": "-- Шаг 9: Борис подключается к игре (должен автостартовать раунд)\nSELECT schnapsen.join_game(\n    (SELECT token FROM tes",
+      "result": [
+        [
+          {
+            "error": 401,
+            "message": "Невалидный токен"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 10: Смотрим статус игры\nSELECT id, status, creator_login, move_time_limit, points_to_win, date_time_start\nFROM sc",
+      "result": []
+    },
+    {
+      "query": "-- Шаг 11: Смотрим игроков\nSELECT p.id as player_id, p.login, p.seat_number, p.game_points\nFROM schnapsen.Players p\nWHER",
+      "error": "syntax error at or near \"AS\"\nLINE 5: ORDER BY p.seat_number AS \"11. Игроки в партии\"\n                               ^\n"
+    },
+    {
+      "query": "-- ===================================================================\n-- 3. ИГРОВОЕ СОСТОЯНИЕ\n-- ======================",
+      "result": [
+        [
+          {
+            "error": 401,
+            "message": "Невалидный токен"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 13: Борис смотрит состояние игры\nSELECT schnapsen.get_game_state(\n    (SELECT token FROM test_tokens WHERE player",
+      "result": [
+        [
+          {
+            "error": 401,
+            "message": "Невалидный токен"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 14: Смотрим активный раунд\nSELECT r.id as round_id, r.round_number, r.trump_suit, r.status,\n       p.login as dea",
+      "error": "syntax error at or near \"AS\"\nLINE 7:   AND r.status = 'активный' AS \"14. Активный раунд\"\n                                    ^\n"
+    },
+    {
+      "query": "-- Шаг 15: Смотрим карты в колоде\nSELECT id, rank, suit, card_value, status\nFROM schnapsen.Cards\nWHERE round_id = (\n    ",
+      "error": "syntax error at or near \"AS\"\nLINE 10: ORDER BY status, suit, rank AS \"15. Карты в раунде\"\n                                     ^\n"
+    },
+    {
+      "query": "-- Шаг 16: Смотрим карты на руках у игроков\nSELECT p.login, c.rank, c.suit, c.card_value\nFROM schnapsen.Cards_on_Hands c",
+      "error": "syntax error at or near \"AS\"\nLINE 7: ORDER BY p.seat_number, c.suit, c.rank AS \"16. Карты на рука...\n                                               ^\n"
+    },
+    {
+      "query": "-- Шаг 17: Смотрим козырную карту\nSELECT rank, suit, card_value, status\nFROM schnapsen.Cards\nWHERE round_id = (\n    SELE",
+      "error": "syntax error at or near \"AS\"\nLINE 9:   AND status = 'козырь открыт' AS \"17. Козырная карта\"\n                                       ^\n"
+    },
+    {
+      "query": "-- Шаг 18: Смотрим текущий ход\nSELECT cm.player_id, p.login as current_player, cm.date_time_start\nFROM schnapsen.Current",
+      "error": "syntax error at or near \"AS\"\nLINE 9: ) AS \"18. Текущий ход\"\n          ^\n"
+    },
+    {
+      "query": "-- ===================================================================\n-- 4. ИГРОВЫЕ ДЕЙСТВИЯ (ПРИМЕРЫ)\n-- =============",
+      "error": "can't execute an empty query"
+    },
+    {
+      "query": "SELECT 'Для теста игровых действий нужно вручную подставить card_id из шага 16' AS \"19. Пример хода\"",
+      "result": [
+        [
+          "Для теста игровых действий нужно вручную подставить card_id из шага 16"
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 20: Пример объявления марьяжа\n-- SELECT schnapsen.declare_marriage(token, game_id, king_card_id, queen_card_id)",
+      "error": "can't execute an empty query"
+    },
+    {
+      "query": "SELECT 'Для объявления марьяжа нужны K и Q одной масти с руки' AS \"20. Пример марьяжа\"",
+      "result": [
+        [
+          "Для объявления марьяжа нужны K и Q одной масти с руки"
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 21: Пример объявления шнапса\n-- SELECT schnapsen.declare_schnapsen(token, game_id)",
+      "error": "can't execute an empty query"
+    },
+    {
+      "query": "SELECT 'Объявить шнапс можно при >= 66 очков' AS \"21. Пример шнапса\"",
+      "result": [
+        [
+          "Объявить шнапс можно при >= 66 очков"
+        ]
+      ]
+    },
+    {
+      "query": "-- ===================================================================\n-- 5. СТАТИСТИКА И ПРОВЕРКИ\n-- ==================",
+      "error": "syntax error at or near \"AS\"\nLINE 14: ORDER BY p.seat_number AS \"22. Счёт игроков в раунде\"\n                                ^\n"
+    },
+    {
+      "query": "-- Шаг 23: История ходов\nSELECT m.move_number, p.login, c.rank, c.suit, m.date_time_start\nFROM schnapsen.Moves m\nJOIN sc",
+      "error": "syntax error at or near \"AS\"\nLINE 11: ORDER BY m.move_number AS \"23. История ходов\"\n                                ^\n"
+    },
+    {
+      "query": "-- Шаг 24: Взятки\nSELECT t.trick_number, p.login as winner, t.points_value,\n       c1.rank || c1.suit as first_card,\n   ",
+      "error": "syntax error at or near \"AS\"\nLINE 14: ORDER BY t.trick_number AS \"24. Взятки\"\n                                 ^\n"
+    },
+    {
+      "query": "-- Шаг 25: Объявленные марьяжи\nSELECT p.login, m.suit, m.is_trump, m.bonus_points, m.date_time\nFROM schnapsen.Marriages ",
+      "error": "syntax error at or near \"AS\"\nLINE 10: ORDER BY m.date_time AS \"25. Марьяжи\"\n                              ^\n"
+    },
+    {
+      "query": "-- ===================================================================\n-- 6. ЗАВЕРШЕНИЕ И ВЫХОД\n-- =====================",
+      "result": [
+        [
+          {
+            "error": 401,
+            "message": "Невалидный токен"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- Шаг 27: Финальное состояние игры\nSELECT id, status, date_time_end\nFROM schnapsen.Games\nWHERE id = (SELECT id FROM tes",
+      "error": "syntax error at or near \"AS\"\nLINE 4: WHERE id = (SELECT id FROM test_game_id LIMIT 1) AS \"27. Фин...\n                                                         ^\n"
+    },
+    {
+      "query": "-- Шаг 28: Финальный счёт игроков\nSELECT p.login, p.game_points\nFROM schnapsen.Players p\nWHERE p.game_id = (SELECT id FR",
+      "error": "syntax error at or near \"AS\"\nLINE 5: ORDER BY p.game_points DESC AS \"28. Финальный счёт\"\n                                    ^\n"
+    },
+    {
+      "query": "-- Шаг 29: Выход Бориса из системы\nSELECT schnapsen.logout_user(\n    (SELECT token FROM test_tokens WHERE player = 'bori",
+      "result": [
+        [
+          {
+            "error": 401,
+            "message": "Невалидный токен"
+          }
+        ]
+      ]
+    },
+    {
+      "query": "-- ===================================================================\n-- CLEANUP (очистка временных таблиц)\n-- ========",
+      "result": null
+    },
+    {
+      "query": "DROP TABLE IF EXISTS test_game_id",
+      "result": null
+    },
+    {
+      "query": "-- ===================================================================\n-- КОНЕЦ СЦЕНАРИЯ\n-- ============================",
+      "result": [
+        [
+          "Тестовый сценарий завершён"
+        ]
+      ]
+    }
+  ]
+}

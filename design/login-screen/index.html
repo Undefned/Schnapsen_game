@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Шнопс 66 — Вход</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      width: 1440px;
+      height: 810px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ─── LEFT PANEL ─── */
+    .left {
+      width: 50%;
+      height: 100%;
+      background-color: #1e3d2b;
+      background-image:
+        radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,0,0,0.15) 0%, transparent 50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 72px 80px;
+      position: relative;
+    }
+
+    /* Cards illustration */
+    .cards-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      margin-bottom: 44px;
+      position: relative;
+      width: 220px;
+      height: 140px;
+    }
+
+    .card {
+      width: 88px;
+      height: 120px;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1.5px solid #e0e0e0;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+    }
+
+    .card .rank {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1;
+    }
+
+    .card .rank-bottom {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1;
+      align-self: flex-end;
+      transform: rotate(180deg);
+    }
+
+    .card-ace {
+      left: 0;
+      top: 12px;
+      transform: rotate(-8deg);
+      z-index: 1;
+    }
+
+    .card-king {
+      left: 72px;
+      top: 0;
+      transform: rotate(4deg);
+      z-index: 2;
+    }
+
+    .card-66 {
+      left: 144px;
+      top: 18px;
+      width: 76px;
+      height: 100px;
+      background: #2a2a2a;
+      border: 2px dashed #e8a020;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .card-66 .num {
+      font-size: 28px;
+      font-weight: 800;
+      color: #e8a020;
+      line-height: 1;
+    }
+
+    .card-66 .label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #e8a020;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Headline */
+    .headline {
+      font-size: 42px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .headline .accent {
+      color: #e8a020;
+    }
+
+    .subtext {
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.6;
+      max-width: 380px;
+      margin-bottom: 40px;
+    }
+
+    /* Tags */
+    .tags {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+
+    .tag {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e8a020;
+    }
+
+    /* Footer info bar */
+    .info-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 10px 16px;
+      width: fit-content;
+    }
+
+    .info-bar .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #e8a020;
+    }
+
+    .info-bar span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .info-bar .separator {
+      width: 1px;
+      height: 16px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ─── RIGHT PANEL ─── */
+    .right {
+      width: 50%;
+      height: 100%;
+      background-color: #1a1a1a;
+      background-image: radial-gradient(ellipse at 70% 30%, rgba(40,40,40,0.8) 0%, transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-box {
+      width: 460px;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .logo-badge {
+      width: 52px;
+      height: 52px;
+      background: #e8a020;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #1a1a1a;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-title .white { color: #ffffff; }
+    .logo-title .orange { color: #e8a020; }
+
+    .logo-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+
+    /* Tab switcher */
+    .tabs {
+      display: flex;
+      background: #272727;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      flex: 1;
+      height: 44px;
+      border: none;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: #e8a020;
+      color: #1a1a1a;
+    }
+
+    /* Form card */
+    .form-card {
+      background: #242424;
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    .field-group {
+      margin-bottom: 18px;
+    }
+
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 48px;
+      background: #2e2e2e;
+      border: 1.5px solid #3a3a3a;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #ffffff;
+      padding: 0 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field::placeholder {
+      color: rgba(255,255,255,0.35);
+    }
+
+    .input-field:focus {
+      border-color: #e8a020;
+    }
+
+    .input-field.error {
+      border-color: #d32f2f;
+    }
+
+    .input-field.has-toggle {
+      padding-right: 60px;
+    }
+
+    .toggle-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+    }
+
+    .error-msg {
+      font-size: 12px;
+      color: #e53935;
+      margin-top: 6px;
+    }
+
+    /* Submit */
+    .btn-submit {
+      width: 100%;
+      height: 52px;
+      background: #e8a020;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.3px;
+      margin-top: 4px;
+    }
+
+    .btn-submit:hover {
+      background: #f5b030;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.985);
+    }
+
+    /* Hint below button */
+    .form-hint {
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.38);
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    .form-hint .link {
+      color: rgba(255,255,255,0.6);
+      font-style: italic;
+    }
+
+    /* Footer note */
+    .form-footer {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.28);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+
+    <div class="cards-wrap">
+      <div class="card card-ace">
+        <span class="rank">A</span>
+        <span class="rank-bottom">A</span>
+      </div>
+      <div class="card card-king">
+        <span class="rank">K</span>
+        <span class="rank-bottom">K</span>
+      </div>
+      <div class="card-66">
+        <span class="num">66</span>
+        <span class="label">шнопс</span>
+      </div>
+    </div>
+
+    <h1 class="headline">
+      Шнопс 66 —<br>
+      <span class="accent">игра, где решают</span> нервы и козырь.
+    </h1>
+
+    <p class="subtext">
+      Марьяж +40, шнапс за 66 очков, таймер на каждый ход.
+      Вызови друга по ID и докажи, кто здесь шнапсер.
+    </p>
+
+    <div class="tags">
+      <span class="tag">До 7 поинтов</span>
+      <span class="tag">Ход 30 сек</span>
+      <span class="tag">Дуэль 1 на 1</span>
+    </div>
+
+    <div class="info-bar">
+      <div class="dot"></div>
+      <span>24 карты: 9 J Q K 10 A</span>
+      <div class="separator"></div>
+      <span>Козырь подсвечен золотом</span>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="form-box">
+
+      <!-- Logo -->
+      <div class="logo">
+        <div class="logo-badge">66</div>
+        <div class="logo-text">
+          <div class="logo-title">
+            <span class="white">ШНОПС</span><span class="orange">66</span>
+          </div>
+          <div class="logo-sub">Schnapsen · 2 игрока · 24 карты</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active">Вход</button>
+        <button class="tab">Регистрация</button>
+      </div>
+
+      <!-- Form card -->
+      <div class="form-card">
+
+        <div class="field-group">
+          <label class="field-label">Логин</label>
+          <div class="input-wrap">
+            <input
+              class="input-field"
+              type="text"
+              placeholder="schnapser_01"
+              value="schnapser_01"
+            />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Пароль</label>
+          <div class="input-wrap">
+            <input
+              class="input-field error has-toggle"
+              type="password"
+              value="password123"
+            />
+            <button class="toggle-btn">hide</button>
+          </div>
+          <div class="error-msg">Неверный логин или пароль</div>
+        </div>
+
+        <button class="btn-submit">Войти</button>
+
+        <div class="form-hint">
+          Нет аккаунта? Создай за 10 секунд — вкладка<br>
+          <span class="link">«Регистрация»</span>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="form-footer">
+        Нажимая «Войти», ты принимаешь правила честной игры
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+SELECT 
+count(d.*) as total_disciplines, 
+count(d.comment) as w_c,
+count(distinct left(d.name, 1)) as unique_first_letters 
+FROM disciplines d;
+
+select 
+d.id as discipline_id,
+d.name as discipline_name,
+dim.id as module_id,
+m.name as module_name,
+dim.position as position
+FROM disciplines_in_modules dim 
+join modules m on dim.id_module = m.id_isu
+join rpd on rpd.id_isu = dim.id_rpd
+join disciplines d on d.id=rpd.id_discipline
+order by m.name, dim.position ;
+
+select 
+count(distinct d.name) as total_disciplines,

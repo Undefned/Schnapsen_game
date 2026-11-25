@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Sequence Diagram - Шнопс 66</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0F172A;
+            color: #F8FAFC;
+            padding: 40px;
+        }
+
+        .page {
+            max-width: 1400px;
+            margin: 0 auto 60px;
+            background: #1E293B;
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid #334155;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #38BDF8;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #F97316;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 16px;
+            color: #22D3EE;
+        }
+
+        p, li {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        ul {
+            padding-left: 24px;
+        }
+
+        .diagram {
+            background: #0B0E14;
+            border-radius: 8px;
+            padding: 32px;
+            margin: 24px 0;
+            border: 1px solid #334155;
+            overflow-x: auto;
+        }
+
+        .actors {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            gap: 16px;
+        }
+
+        .actor {
+            flex: 1;
+            text-align: center;
+        }
+
+        .actor-box {
+            background: #1E293B;
+            border: 2px solid #38BDF8;
+            border-radius: 8px;
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .lifeline {
+            width: 2px;
+            background: #475569;
+            margin: 0 auto;
+            height: 100%;
+            position: relative;
+        }
+
+        .interaction {
+            position: relative;
+            margin: 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .arrow {
+            flex: 1;
+            height: 2px;
+            background: #F97316;
+            position: relative;
+        }
+
+        .arrow::after {
+            content: '▶';
+            position: absolute;
+            right: -8px;
+            top: -9px;
+            color: #F97316;
+            font-size: 16px;
+        }
+
+        .arrow.return {
+            background: #22D3EE;
+        }
+
+        .arrow.return::after {
+            content: '◀';
+            left: -8px;
+            right: auto;
+            color: #22D3EE;
+        }
+
+        .message {
+            background: #1E293B;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px solid #475569;
+            white-space: nowrap;
+        }
+
+        .note {
+            background: #422006;
+            border-left: 4px solid #F97316;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .highlight {
+            color: #F97316;
+            font-weight: 600;
+        }
+
+        .code {
+            background: #0B0E14;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #22D3EE;
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .flow-step {
+            background: #0B0E14;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border-left: 3px solid #38BDF8;
+        }
+
+        .flow-desc {
+            background: #1E293B;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .architecture {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 32px;
+            background: #0B0E14;
+            border-radius: 8px;
+            margin: 24px 0;
+        }
+
+        .arch-box {
+            background: #1E293B;
+            border: 2px solid #38BDF8;
+            padding: 20px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .arch-arrow {
+            font-size: 32px;
+            color: #F97316;
+        }
+
+        .arch-label {
+            font-size: 13px;
+            color: #22D3EE;
+            margin-top: 8px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <!-- Страница 1: Общая информация -->
+    <div class="page">
+        <h1>UML Sequence Diagram для проекта "Шнопс 66"</h1>
+        
+        <h2>Используемая схема из лекции</h2>
+        <p><span class="highlight">UML Sequence Diagram (Диаграмма последовательности взаимодействия)</span></p>
+        <p>Из лекции "Базы данных для игровых приложений" - страницы 13-16</p>
+        
+        <div class="note">
+            <strong>Конкретный вариант:</strong> Игра всегда для двух игроков с системой приглашений (стр. 14-16)
+        </div>
+
+        <h3>Почему именно этот вариант?</h3>
+        <ul>
+            <li><strong>Шнопс 66 - игра строго на 2 игроков</strong> (не подходит вариант с игровыми комнатами)</li>
+            <li><strong>Система приглашений между пользователями</strong> - пользователь видит список других пользователей и может отправить приглашение конкретному игроку</li>
+            <li><strong>Приглашение имеет срок действия (таймер)</strong> - если не принято за время, становится недоступным</li>
+        </ul>
+    </div>
+
+    <!-- Страница 2: Архитектура -->
+    <div class="page">
+        <h1>Клиент-серверная архитектура</h1>
+        
+        <h2>Вариант 3 из лекции (стр. 12)</h2>
+        
+        <div class="architecture">
+            <div class="arch-box">
+                HTTP-клиент
+            </div>
+            <div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-label">API</div>
+            </div>
+            <div class="arch-box">
+                HTTP-сервер
+            </div>
+            <div>
+                <div class="arch-arrow">→</div>
+            </div>
+            <div class="arch-box">
+                SQL-сервер
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Ключевые принципы:</strong><br>
+            • API представляет собой набор HTTP-запросов<br>
+            • Клиенты НЕ могут подключаться к SQL-серверу напрямую<br>
+            • HTTP-сервер реализует логику игры и контролирует доступ
+        </div>
+
+        <h3>Тип взаимодействия: Polling (Short Polling)</h3>
+        <ul>
+            <li>Клиент периодически (каждые 3-5 сек) отправляет запросы серверу</li>
+            <li>Сервер сразу отвечает на запросы</li>
+            <li>Сервер НЕ может сам инициировать отправку данных клиенту</li>
+        </ul>
+
+        <h3>Почему нельзя давать прямой доступ к БД?</h3>
+        <p>Из лекции (стр. 4): <em>"Сервер должен обеспечивать корректность работы при любых запросах, приходящих от клиентов (даже если эти запросы ошибочны или специально стремятся нарушить правила игры), так как клиент может быть создан кем угодно."</em></p>
+    </div>
+
+    <!-- Страница 3: Основная UML Sequence Diagram -->
+    <div class="page">
+        <h1>UML Sequence Diagram: Основной флоу</h1>
+        
+        <div class="diagram">
+            <div class="actors">
+                <div class="actor">
+                    <div class="actor-box">User A</div>
+                    <div class="lifeline" style="height: 600px;"></div>
+                </div>
+                <div class="actor">
+                    <div class="actor-box">Client A</div>
+                    <div class="lifeline" style="height: 600px;"></div>
+                </div>
+                <div class="actor">
+                    <div class="actor-box">Server</div>
+                    <div class="lifeline" style="height: 600px;"></div>
+                </div>
+                <div class="actor">
+                    <div class="actor-box">Database</div>
+                    <div class="lifeline" style="height: 600px;"></div>
+                </div>
+                <div class="actor">
+                    <div class="actor-box">Client B</div>
+                    <div class="lifeline" style="height: 600px;"></div>
+                </div>
+                <div class="actor">
+                    <div class="actor-box">User B</div>
+                    <div class="lifeline" style="height: 600px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Последовательность взаимодействия</h2>
+        
+        <h3>1. Авторизация</h3>
+        <div class="flow-grid">
+            <div class="flow-step">User A → Client A</div>
+            <div class="flow-desc">Вводит логин и пароль</div>
+            
+            <div class="flow-step">Client A → Server</div>
+            <div class="flow-desc"><span class="code">login(login, password)</span></div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка существования логина и правильности пароля</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">Результат проверки</div>
+            
+            <div class="flow-step">Server → Client A</div>
+            <div class="flow-desc">Успех или ошибка</div>
+            
+            <div class="flow-step">Client A → User A</div>
+            <div class="flow-desc">Показывает результат авторизации</div>
+        </div>
+
+        <h3>2. Получение списка пользователей</h3>
+        <div class="flow-grid">
+            <div class="flow-step">Client A → Server</div>
+            <div class="flow-desc"><span class="code">get_users_list(login, password)</span></div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка логина/пароля, получение списка пользователей</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">Список пользователей</div>
+            
+            <div class="flow-step">Server → Client A</div>
+            <div class="flow-desc">Список пользователей в JSON</div>
+            
+            <div class="flow-step">Client A → User A</div>
+            <div class="flow-desc">Отображает список доступных игроков</div>
+        </div>
+    </div>
+
+    <!-- Страница 4: Приглашения -->
+    <div class="page">
+        <h1>Система приглашений</h1>
+        
+        <h3>3. Отправка приглашения</h3>
+        <div class="flow-grid">
+            <div class="flow-step">User A → Client A</div>
+            <div class="flow-desc">Выбирает User B и отправляет приглашение (с таймаутом)</div>
+            
+            <div class="flow-step">Client A → Server</div>
+            <div class="flow-desc"><span class="code">send_invitation(login, password, target_user, timeout)</span></div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка логина/пароля, создание приглашения</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">ID приглашения</div>
+            
+            <div class="flow-step">Server → Client A</div>
+            <div class="flow-desc">Успех</div>
+            
+            <div class="flow-step">Client A → User A</div>
+            <div class="flow-desc">"Приглашение отправлено"</div>
+        </div>
+
+        <div class="note">
+            <strong>Таймаут приглашения (стр. 14 лекции):</strong><br>
+            "У приглашения есть «срок действия»: если оно не было принято за указанный срок, то оно становится недоступным (чтобы не произошло ситуации, когда отправитель приглашения не дождался принятия и ушёл, а в это время приглашение приняли и игра началась без него)."
+        </div>
+
+        <h3>4. Polling - получение приглашений (каждые N секунд)</h3>
+        <div class="flow-grid">
+            <div class="flow-step">Client B → Server</div>
+            <div class="flow-desc"><span class="code">get_invitations(login, password)</span> [автоматически каждые 3-5 сек]</div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка логина/пароля, получение активных приглашений</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">Список приглашений</div>
+            
+            <div class="flow-step">Server → Client B</div>
+            <div class="flow-desc">Список приглашений в JSON</div>
+            
+            <div class="flow-step">Client B → User B</div>
+            <div class="flow-desc">Показывает входящие приглашения</div>
+        </div>
+
+        <h3>5. Принятие приглашения</h3>
+        <div class="flow-grid">
+            <div class="flow-step">User B → Client B</div>
+            <div class="flow-desc">Принимает приглашение от User A</div>
+            
+            <div class="flow-step">Client B → Server</div>
+            <div class="flow-desc"><span class="code">accept_invitation(login, password, invitation_id)</span></div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка логина/пароля, валидность приглашения, создание игры</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">game_id</div>
+            
+            <div class="flow-step">Server → Client B</div>
+            <div class="flow-desc">game_id, начальное состояние</div>
+            
+            <div class="flow-step">Client B → User B</div>
+            <div class="flow-desc">"Игра началась!"</div>
+        </div>
+    </div>
+
+    <!-- Страница 5: Игровой процесс -->
+    <div class="page">
+        <h1>Игровой процесс</h1>
+        
+        <h3>6. Polling - получение состояния игры (каждые N секунд)</h3>
+        <div class="flow-grid">
+            <div class="flow-step">Client A → Server</div>
+            <div class="flow-desc"><span class="code">get_game_state(login, password, game_id)</span> [автоматически]</div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка логина/пароля, проверка что игра не закончилась, получение состояния</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">Состояние игры (карты, счёт, чей ход, стол)</div>
+            
+            <div class="flow-step">Server → Client A</div>
+            <div class="flow-desc">JSON с картами игрока, счётом, текущим ходом</div>
+            
+            <div class="flow-step">Client A → User A</div>
+            <div class="flow-desc">Обновляет отображение игры</div>
+        </div>
+
+        <div class="note">
+            <strong>Важно:</strong> Клиент получает ТОЛЬКО свои карты. Карты противника скрыты для защиты от читерства.
+        </div>
+
+        <h3>7. Выполнение хода</h3>
+        <div class="flow-grid">
+            <div class="flow-step">User A → Client A</div>
+            <div class="flow-desc">Выбирает карту и кладёт её на стол</div>
+            
+            <div class="flow-step">Client A → Server</div>
+            <div class="flow-desc"><span class="code">make_move(login, password, game_id, card_id)</span></div>
+            
+            <div class="flow-step">Server → Database</div>
+            <div class="flow-desc">Проверка: сейчас ход этого игрока? карта принадлежит игроку? ход легален?</div>
+            
+            <div class="flow-step">Database → Server</div>
+            <div class="flow-desc">Новое состояние игры после хода</div>
+            
+            <div class="flow-step">Server → Client A</div>
+            <div class="flow-desc">Успех, обновлённое состояние</div>
+            
+            <div class="flow-step">Client A → User A</div>
+            <div class="flow-desc">Обновляет отображение (карта на столе)</div>
+        </div>
+
+        <h3>8. Противник узнаёт о ходе через Polling</h3>
+        <div class="flow-grid">
+            <div class="flow-step">Client B → Server</div>
+            <div class="flow-desc"><span class="code">get_game_state(...)</span> [очередной polling-запрос]</div>
+            
+            <div class="flow-step">Server → Client B</div>
+            <div class="flow-desc">Новое состояние с картой User A на столе, теперь ход User B</div>
+            
+            <div class="flow-step">Client B → User B</div>
+            <div class="flow-desc">Показывает ход противника, теперь ваш ход</div>
+        </div>
+    </div>
+
+    <!-- Страница 6: Проверки безопасности -->
+    <div class="page">
+        <h1>Проверки сервера на каждый запрос</h1>
+        
+        <h2>Важные проверки</h2>
+        
+        <h3>1. Аутентификация</h3>
+        <p>Правильность логина и пароля. Без правильной пары логин/пароль запрос отклоняется.</p>
+        
+        <h3>2. Авторизация</h3>
+        <p>Имеет ли пользователь право на это действие?</p>
+        <ul>
+            <li>При получении состояния игры: пользователь участвует в этой игре?</li>
+            <li>При ходе: сейчас ход этого игрока?</li>
+            <li>При принятии приглашения: приглашение адресовано этому пользователю?</li>
+        </ul>
+        
+        <h3>3. Валидация параметров</h3>
+        <p>Корректность переданных данных:</p>
+        <ul>
+            <li>game_id существует?</li>
+            <li>card_id корректный?</li>
+            <li>invitation_id существует и активен?</li>
+        </ul>
+        
+        <h3>4. Бизнес-логика игры</h3>
+        <p>Соблюдение правил игры:</p>
+        <ul>
+            <li>Карта принадлежит игроку?</li>
+            <li>Ход легален по правилам Шнопс 66?</li>
+            <li>При объявлении марьяжа: у игрока есть король и дама одной масти?</li>
+            <li>Игра ещё не завершена?</li>
+            <li>Не истёк таймлимит на ход?</li>
+        </ul>
+
+        <div class="note">
+            <strong>Цитата из лекции (стр. 13):</strong><br>
+            "Чтобы соперники не могли подглядеть скрытую информацию других пользователей, у каждого пользователя должен быть пароль, чтобы сервер предоставлял ему только доступную ему информацию."
+        </div>
+
+        <h2>Что защищается?</h2>
+        <ul>
+            <li><strong>Карты игрока</strong> (скрытая информация) - клиент получает только свои карты</li>
+            <li><strong>Право на действия</strong> - только свои ходы, нельзя ходить за противника</li>
+            <li><strong>Личные данные</strong> - статистика, история игр</li>
+            <li><strong>Целостность игры</strong> - нельзя нарушить правила, изменить счёт</li>
+        </ul>
+    </div>
+
+    <!-- Страница 7: Итоговая схема -->
+    <div class="page">
+        <h1>Итоговая схема для Шнопс 66</h1>
+        
+        <div class="diagram">
+            <pre style="color: #F8FAFC; font-size: 14px; line-height: 1.8;">
+┌─────────┐     ┌─────────┐     ┌────────┐     ┌──────────┐
+│ User A  │────▶│Client A │────▶│ Server │────▶│ Database │
+└─────────┘     └─────────┘     └────────┘     └──────────┘
+                     ▲               │               │
+                     │               ▼               │
+                     └───────JSON Response◀──────────┘
+                        (карты, счёт, ходы)
+
+                    Polling каждые 3-5 сек
+                          
+┌─────────┐     ┌─────────┐          ▲
+│ User B  │────▶│Client B │──────────┘
+└─────────┘     └─────────┘     одновременный 
+                                polling обоих клиентов
+            </pre>
+        </div>
+
+        <h2>Ключевые моменты</h2>
+        
+        <div class="flow-grid">
+            <div class="flow-step">Архитектура</div>
+            <div class="flow-desc">Вариант 3: HTTP-клиент → HTTP-сервер → SQL-сервер</div>
+            
+            <div class="flow-step">Тип взаимодействия</div>
+            <div class="flow-desc">Polling (Short Polling) - клиент опрашивает сервер каждые 3-5 секунд</div>
+            
+            <div class="flow-step">UML-схема</div>
+            <div class="flow-desc">Sequence Diagram для игры всегда на 2 игроков с приглашениями (стр. 14-16)</div>
+            
+            <div class="flow-step">Безопасность</div>
+            <div class="flow-desc">Аутентификация по логину/паролю на каждый запрос, вся логика на сервере</div>
+            
+            <div class="flow-step">Таймауты</div>
+            <div class="flow-desc">Срок действия приглашения + лимит времени на каждый ход</div>
+            
+            <div class="flow-step">Формат данных</div>
+            <div class="flow-desc">JSON для запросов и ответов</div>
+        </div>
+
+        <h2>Отличие от варианта с игровыми комнатами</h2>
+        <p><strong>НЕ используется</strong> вариант со страниц 17-20, потому что:</p>
+        <ul>
+            <li>Вариант с комнатами: переменное количество игроков, игра начинается когда все места заполнены</li>
+            <li>Наш вариант: игра ВСЕГДА на 2 игроков, прямое приглашение конкретного пользователя</li>
+        </ul>
+
+        <div class="note">
+            <strong>Источник:</strong><br>
+            Лекция "Базы данных для игровых приложений"<br>
+            Дата: 2026-09-03<br>
+            Тема: "Клиент-серверное взаимодействие"<br>
+            Страницы: 13-16 (UML Sequence Diagram для игры на 2 игроков)
+        </div>
+    </div>
+
+</body>
+</html>

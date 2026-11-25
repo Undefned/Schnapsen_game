@@ -1,0 +1,44 @@
+-- 1. Преобразовать текст в дату и прибавить 10 дней
+select ('2026-02-04'::DATE + 10) as sum;
+
+-- 2. Определить текущий год и месяц
+select to_char(CURRENT_DATE, 'Month');
+select to_char(CURRENT_DATE, 'YYYY');
+
+-- 3. Проверить: текущий день — выходной? (логическое выражение)
+select EXTRACT(DOW from NOW()) IN (6,7)::TEXT;
+
+-- 4. Сформировать строку Сегодня: YYYY-MM-DD и получить её длину
+select Length(CONCAT('Сегодня: ', CURRENT_DATE::DATE));
+
+-- 5. Проверить, что строка удовлетворяет шаблону мобильного номера телефона
+select ('+7 (999) 999-99-99' Like '+_ (_) _--')::Text;
+
+-- 6. Вывести, является ли текущий год високосный
+select extract(year FROM current_date),
+(((extract(year from current_date)%400.0) = 0 
+OR (extract(year from current_date)%100.0) = 0 
+AND (extract(year from current_date)%4.0) = 0)::TEXT) as is_leap;
+
+-- 7. Вывести дату первого дня текущего года
+SELECT CONCAT(TO_CHAR(CURRENT_DATE, 'YYYY'), '-01-01');
+
+-- 8. Вывести дату последнего дня текущего года
+SELECT (DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year - 1 day')::DATE;
+
+-- 9. Вывести количество дней в текущем году
+SELECT (DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year')
+- DATE_TRUNC('YEAR', CURRENT_DATE);
+
+-- 10. Вывести, какая часть года прошла на текущий момент, в процентах
+with year_data as ( 
+select extract(year FROM current_date) as cur_year, extract(doy from current_date) as cur_day)
+select round((cur_day::numeric / 
+case when (cur_year%400.0 = 0) or (cur_year%100.0 != 0) and (cur_year%4.0 = 0) then 365 else 366 end) * 100, 2) from year_data;
+
+-- 11. К первой цифре номера дня в текущем месяце прибавить последнюю цифру номера текущего месяца
+with s as (select substring(extract(day from current_date)::text, 1, 1)::integer as cur_day, substring(extract(month from current_date)::text, -1)::integer as cur_month)
+select (cur_day + cur_month) as res from s;
+
+bonus: 
+    select '2026-02-04'::DATE - '2006-07-22'::DATE as res;

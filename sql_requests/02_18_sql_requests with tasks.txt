@@ -1,0 +1,83 @@
+-- 1. Выведите два столбца: название дисциплины (discipline_name) и ответственного (implementer). Ограничьте вывод 15 записями.
+SELECT discipline_name, implementer from disciplines_full 
+LIMIT 15;
+
+-- 2. Выведите список уникальных названий дисциплин (discipline_name).
+select DISTINCT discipline_name  FROM disciplines_full;
+
+-- 3. Выведите уникальные номера семестров.
+select DISTINCT semester_number from disciplines_full;
+
+-- 4. Выведите все дисциплины, у которых количество зачетных единиц (credits) больше 3.
+select credits from disciplines_full 
+WHERE credits > 3;
+
+-- 5. Выведите rpd_name (название РПД) и status (статус) для всех записей, где статус 'в работе'.
+SELECT rpd_name, status FROM disciplines_full 
+WHERE status = 'в работе';
+
+-- 6. Выведите дисциплины (discipline_name), в названии которых встречается слово «Математика» (в любом регистре).
+SELECT discipline_name FROM disciplines_full 
+where Lower(discipline_name) Like('%математика%');
+
+-- 7. Выведите названия РПД, у которых лекционных часов (lectures_hours) больше 0, но при этом нет лабораторных (labs_hours = 0).
+select rpd_name FROM disciplines_full 
+where lectures_hours > 0 and labs_hours = 0;
+
+-- 10. Выведите discipline_name и credits для всех дисциплин, отсортировав их по количеству кредитов по возрастанию (от меньшего к большему).
+SELECT discipline_name, credits FROM disciplines_full 
+ORDER BY credits asc;
+
+-- 11. Выведите discipline_name, semester_number, credits для всех дисциплин, отсортировав их: сначала по номеру семестра (по возрастанию), затем по названию дисциплины (по алфавиту).
+SELECT discipline_name, semester_number, credits FROM disciplines_full 
+ORDER BY semester_number asc, discipline_name asc;
+
+-- 12. Выведите discipline_name и credits для 3 дисциплин 4 семестра с наибольшим количеством кредитов.
+select discipline_name, credits FROM disciplines_full 
+where semester_number = 4
+ORDER BY credits desc
+limit 3;
+
+-- 13. Выведите discipline_name, credits для дисциплин, которые реализует ФПИ и КТ (implementer содержит 'ФПИ и КТ'), отсортированные по количеству кредитов по убыванию.
+SELECT discipline_name, credits FROM disciplines_full 
+where implementer like('%ФПИ и КТ%')
+order by credits asc;
+
+-- 14. Выведите discipline_name, semester_number и общее количество часов для топ-3 самых объемных дисциплин в 5 семестре.
+SELECT
+    discipline_name, 
+    semester_number, 
+    (lectures_hours + practice_hours + labs_hours) AS total_hours
+FROM disciplines_full 
+WHERE semester_number = 5 
+ORDER BY total_hours DESC
+LIMIT 3;
+
+-- 15. Выведите название РПД, по которой самое большое количество часов в семестре и есть все виды занятий (лек, практ, лаб).
+SELECT rpd_name, (lectures_hours + practice_hours + labs_hours) as total_hours
+FROM disciplines_full 
+where lectures_hours > 0 and practice_hours > 0 and labs_hours > 0
+ORDER BY total_hours desc;
+
+-- 16. Выведите одной колонкой под названием description строку вида: "Дисциплина [название] (семестр [номер]), кредиты: [количество]" для первых 10 записей.
+SELECT CONCAT('Дисциплина: ', discipline_name, ', семестр: ', semester_number, ', кредиты: ', credits) AS description 
+FROM disciplines_full 
+LIMIT 10;
+
+-- 17. Выведите discipline_name и длину названия дисциплины, назвав столбец name_length. Отсортируйте по убыванию длины названия.
+SELECT discipline_name, length(discipline_name) as len
+FROM disciplines_full 
+ORDER BY len desc;
+
+-- 19. Выведите все столбцы для дисциплин, пропустив первые 10 записей и показав следующие 5. Отсортируйте по discipline_name перед применением OFFSET.
+SELECT * FROM disciplines_full 
+ORDER BY discipline_name
+OFFSET 10
+limit 5;
+
+-- 20. Отсортировав по номерам семестров уникальные discipline_name в модуле 'Обязательные дисциплины (Трек 3) КТвД 24', выведите название дисциплины, которая изучается в этом модуле третьей по счёту.
+SELECT DISTINCT discipline_name FROM disciplines_full 
+WHERE module_name like('Обязательные дисциплины (Трек 3) КТвД 24')
+ORDER BY semester_number
+OFFSET 2
+limit 1;

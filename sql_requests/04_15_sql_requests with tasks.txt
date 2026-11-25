@@ -1,0 +1,69 @@
+-- 1. Задание 1
+Выведите все модули и
+количество РПД,
+привязанных к каждому
+модулю, включая модули,
+где РПД нет
+
+SELECT m.name, count(r.id_isu) as r_count
+FROM modules m
+left join disciplines_in_modules dim
+ on m.id_isu = dim.id_module
+left join rpd r
+on r.id_isu = dim.id_rpd
+group by m.id_isu, m.name;
+
+-- 2. Задание 2
+Выведите все дисциплины и
+количество модулей, в
+которых они представлены,
+включая дисциплины,
+которые пока не входят ни в
+один модуль.
+
+SELECT d.name, count(d.id) as m_count
+FROM disciplines d
+left join rpd r
+ on d.id = r.id_discipline
+LEFT JOIN disciplines_in_modules dim
+ on r.id_isu = dim.id_rpd
+left join modules m
+ on dim.id_module = m.id_isu
+group by d.id;
+
+-- 3. Задание 3
+Выведите все РПД и суммарное количество часов по каждому,
+включая РПД без нагрузки
+
+SELECT r.name, sum(w.hours) as tot_hours
+from rpd r
+left join semester_rpd sr
+ on r.id_isu = sr.id_rpd
+LEFT JOIN workloads w
+ on  sr.id = w.id_sem
+group by r.name
+order by tot_hours desc;
+
+-- Создание таблиц
+
+create table Players (
+  email varchar(100),
+  nickname_platform varchar(100),
+  country varchar(100),
+  primary key(email)
+);
+
+create table Games (
+  game_name varchar(100), 
+  year int,
+  primary key(game_name)
+);
+
+create table Players_in_games (
+  email varchar(100),
+  game_name varchar(100),
+  player_name_in_game varchar(100),
+  primary key(email, game_name)
+)
+
+--
