@@ -1,42 +1,30 @@
--- Регистрация нового пользователя
-CREATE OR REPLACE FUNCTION schnapsen.register_user(p_login TEXT, p_password TEXT)
+CREATE OR REPLACE FUNCTION schnapsen.register_user(
+    p_login TEXT,
+    p_password TEXT
+)
 RETURNS JSONB
-LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = pg_catalog, schnapsen, pg_temp
-SET timezone = 'UTC'
-AS $$
-DECLARE
-    v_tokens JSONB;
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, schnapsen, pg_temp AS $$
 BEGIN
-    -- Валидация логина
-    IF p_login IS NULL OR btrim(p_login) = '' THEN
-        RETURN jsonb_build_object('error', 400, 'message', 'Заполните логин');
+    IF p_login IS NULL
+       OR btrim(p_login) = ''
+       OR p_password IS NULL
+       OR p_password = '' THEN
+        RETURN jsonb_build_object('error', 400, 'message', 'Логин и пароль обязательны');
     END IF;
 
-    IF length(p_login) > 30 THEN
-        RETURN jsonb_build_object('error', 400, 'message', 'Логин длиннее 30 символов');
-    END IF;
-
-    -- Валидация пароля
-    IF p_password IS NULL OR btrim(p_password) = '' THEN
-        RETURN jsonb_build_object('error', 400, 'message', 'Заполните пароль');
-    END IF;
-
-    IF length(p_password) > 100 THEN
-        RETURN jsonb_build_object('error', 400, 'message', 'Пароль длиннее 100 символов');
-    END IF;
-
-    -- Создаём пользователя
-    INSERT INTO Users(login, password)
-    VALUES (p_login, p_password);
-
-    -- Генерируем токены
-    v_tokens := generate_tokens(p_login);
-
-    -- Возвращаем токены
-    RETURN v_tokens;
-EXCEPTION
-    WHEN unique_violation THEN
+    IF EXISTS (
+        SELECT 1
+        FROM Users
+        WHERE login = p_login
+    ) THEN
         RETURN jsonb_build_object('error', 409, 'message', 'Логин уже занят');
-END;
+    END IF;
+
+    INSERT INTO Users (login, password, name)
+    VALUES (p_login, md5(p_password), p_login);
+
+    RETURN generate_tokens(p_login);
+END
 $$;

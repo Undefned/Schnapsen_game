@@ -12,10 +12,11 @@ BEGIN
         RETURN NULL;
     END IF;
 
-    SELECT login INTO v_login
+    SELECT login
+    INTO v_login
     FROM Tokens
     WHERE access_token = p_access_token
-        AND access_expires > clock_timestamp();
+      AND access_expires > clock_timestamp();
 
     RETURN v_login;
 END;
