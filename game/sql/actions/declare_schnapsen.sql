@@ -7,37 +7,37 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, schnapsen, pg_temp AS $$
 DECLARE
-    u VARCHAR(30);
-    p INT;
-    r INT;
-    score INT;
+    user_login VARCHAR(30);
+    player_id INT;
+    round_id INT;
+    player_score INT;
 BEGIN
-    u := check_token(p_access_token);
+    user_login := check_token(p_access_token);
 
     SELECT id, round_score
-    INTO p, score
+    INTO player_id, player_score
     FROM Players
     WHERE game_id = p_game_id
-      AND login = u;
+      AND login = user_login;
 
     SELECT id
-    INTO r
+    INTO round_id
     FROM Rounds
     WHERE game_id = p_game_id
     ORDER BY round_number DESC
     LIMIT 1;
 
-    IF p IS NULL OR r IS NULL THEN
+    IF player_id IS NULL OR round_id IS NULL THEN
         RETURN jsonb_build_object('error', 404, 'message', 'Игра или игрок не найдены');
     END IF;
 
     INSERT INTO Schnapsen_declarations (round_id, point_declared, player_id)
-    VALUES (r, score, p)
+    VALUES (round_id, player_score, player_id)
     ON CONFLICT (round_id) DO NOTHING;
 
     RETURN jsonb_build_object(
-        'status', CASE WHEN score >= 66 THEN 'honest_schnapsen' ELSE 'false_schnapsen' END,
-        'score', score
+        'status', CASE WHEN player_score >= 66 THEN 'honest_schnapsen' ELSE 'false_schnapsen' END,
+        'score', player_score
     );
 END
 $$;

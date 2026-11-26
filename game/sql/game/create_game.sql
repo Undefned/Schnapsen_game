@@ -8,13 +8,13 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, schnapsen, pg_temp AS $$
 DECLARE
-    u VARCHAR(30);
-    g INT;
-    p INT;
+    user_login VARCHAR(30);
+    game_id INT;
+    player_id INT;
 BEGIN
-    u := check_token(p_access_token);
+    user_login := check_token(p_access_token);
 
-    IF u IS NULL THEN
+    IF user_login IS NULL THEN
         RETURN jsonb_build_object('error', 401, 'message', 'Невалидный токен');
     END IF;
 
@@ -28,12 +28,12 @@ BEGIN
 
     INSERT INTO Games (move_time_limit, points_to_win)
     VALUES (p_move_time_limit, p_points_to_win)
-    RETURNING id INTO g;
+    RETURNING id INTO game_id;
 
     INSERT INTO Players (seat_number, game_id, login)
-    VALUES (1, g, u)
-    RETURNING id INTO p;
+    VALUES (1, game_id, user_login)
+    RETURNING id INTO player_id;
 
-    RETURN jsonb_build_object('game_id', g, 'player_id', p, 'status', 'создана');
+    RETURN jsonb_build_object('game_id', game_id, 'player_id', player_id, 'status', 'создана');
 END
 $$;

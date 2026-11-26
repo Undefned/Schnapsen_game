@@ -7,17 +7,17 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, schnapsen, pg_temp AS $$
 DECLARE
-    u VARCHAR(30);
+    user_login VARCHAR(30);
 BEGIN
-    u := check_token(p_access_token);
+    user_login := check_token(p_access_token);
 
-    IF u IS NULL THEN
+    IF user_login IS NULL THEN
         RETURN jsonb_build_object('error', 401, 'message', 'Невалидный токен');
     END IF;
 
     IF NOT EXISTS (
         SELECT 1 FROM Players
-        WHERE game_id = p_game_id AND login = u
+        WHERE game_id = p_game_id AND login = user_login
     ) THEN
         RETURN jsonb_build_object('error', 404, 'message', 'Игрок не найден в игре');
     END IF;

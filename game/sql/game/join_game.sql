@@ -7,12 +7,12 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, schnapsen, pg_temp AS $$
 DECLARE
-    u VARCHAR(30);
-    n INT;
+    user_login VARCHAR(30);
+    next_seat_number INT;
 BEGIN
-    u := check_token(p_access_token);
+    user_login := check_token(p_access_token);
 
-    IF u IS NULL THEN
+    IF user_login IS NULL THEN
         RETURN jsonb_build_object('error', 401, 'message', 'Невалидный токен');
     END IF;
 
@@ -28,24 +28,24 @@ BEGIN
         SELECT 1
         FROM Players
         WHERE game_id = p_game_id
-          AND login = u
+          AND login = user_login
     ) THEN
         RETURN jsonb_build_object('error', 409, 'message', 'Вы уже в этой игре');
     END IF;
 
     SELECT COALESCE(max(seat_number), 0) + 1
-    INTO n
+    INTO next_seat_number
     FROM Players
     WHERE game_id = p_game_id;
 
-    IF n > 2 THEN
+    IF next_seat_number > 2 THEN
         RETURN jsonb_build_object('error', 409, 'message', 'В игре уже достаточно игроков');
     END IF;
 
     INSERT INTO Players (seat_number, game_id, login)
-    VALUES (n, p_game_id, u);
+    VALUES (next_seat_number, p_game_id, user_login);
 
-    IF n = 2 THEN
+    IF next_seat_number = 2 THEN
         RETURN start_round(p_game_id);
     END IF;
 

@@ -6,18 +6,18 @@ SET search_path = pg_catalog, schnapsen, pg_temp
 SET timezone = 'UTC'
 AS $$
 DECLARE
-    v_login VARCHAR(30);
+    token_login VARCHAR(30);
 BEGIN
     IF p_access_token IS NULL OR btrim(p_access_token) = '' THEN
         RETURN NULL;
     END IF;
 
     SELECT login
-    INTO v_login
+    INTO token_login
     FROM Tokens
     WHERE access_token = p_access_token
       AND access_expires > clock_timestamp();
 
-    RETURN v_login;
+    RETURN token_login;
 END;
 $$;

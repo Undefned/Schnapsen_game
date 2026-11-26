@@ -9,28 +9,28 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, schnapsen, pg_temp AS $$
 DECLARE
-    u VARCHAR(30);
-    p INT;
-    r INT;
-    bonus INT;
-    s VARCHAR(10);
+    user_login VARCHAR(30);
+    player_id INT;
+    round_id INT;
+    bonus_points INT;
+    trump_suit VARCHAR(10);
 BEGIN
-    u := check_token(p_access_token);
+    user_login := check_token(p_access_token);
 
     SELECT id
-    INTO p
+    INTO player_id
     FROM Players
     WHERE game_id = p_game_id
-      AND login = u;
+      AND login = user_login;
 
     SELECT id, trump_suit
-    INTO r, s
+    INTO round_id, trump_suit
     FROM Rounds
     WHERE game_id = p_game_id
     ORDER BY round_number DESC
     LIMIT 1;
 
-    IF p IS NULL OR r IS NULL THEN
+    IF player_id IS NULL OR round_id IS NULL THEN
         RETURN jsonb_build_object('error', 404, 'message', 'Игра или игрок не найдены');
     END IF;
 
@@ -50,21 +50,21 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM Cards_in_hand
-        WHERE player_id = p
+        WHERE player_id = player_id
           AND card_id IN (p_king_card_id, p_queen_card_id)
     ) THEN
         RETURN jsonb_build_object('error', 400, 'message', 'Карты должны быть на руках');
     END IF;
 
-    SELECT CASE WHEN c.suit = s THEN 40 ELSE 20 END, c.suit
-    INTO bonus, s
+    SELECT CASE WHEN c.suit = trump_suit THEN 40 ELSE 20 END, c.suit
+    INTO bonus_points, trump_suit
     FROM Cards c
     WHERE c.id = p_king_card_id;
 
     INSERT INTO Schnapsen_declarations (round_id, point_declared, player_id)
-    VALUES (r, bonus, p)
+    VALUES (round_id, bonus_points, player_id)
     ON CONFLICT (round_id) DO NOTHING;
 
-    RETURN jsonb_build_object('status', 'marriage_declared', 'bonus_points', bonus);
+    RETURN jsonb_build_object('status', 'marriage_declared', 'bonus_points', bonus_points);
 END
 $$;
